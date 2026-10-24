@@ -3,7 +3,7 @@
 
 show_main_menu() {
     clear
-    if [ "${ENABLE_STATS:-0}" = "1" ] && [ -n "${TODAY:-}" ] && [ -n "${TOTAL:-}" ]; then
+    if [ -n "${TODAY:-}" ] && [ -n "${TOTAL:-}" ]; then
         echo -e "    ${skyblue}当日运行：${yellow}${TODAY}次   ${skyblue}累计运行：${yellow}${TOTAL}次${re}"
     fi
     echo -e "\033[0;97m-----------------By'${PROJECT_AUTHOR}'-----------------\033[0m"

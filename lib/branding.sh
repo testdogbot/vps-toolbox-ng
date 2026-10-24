@@ -3,7 +3,7 @@
 
 PROJECT_NAME="vps-toolbox"
 PROJECT_TITLE="VPS 工具箱"
-PROJECT_VERSION="0.3.2"
+PROJECT_VERSION="0.3.3"
 PROJECT_AUTHOR="testdogbot"
 
 # 你的 GitHub 仓库（留空表示尚未发布，快捷键与更新功能会退化为本地模式）
@@ -27,10 +27,9 @@ APP_CATALOG_DIR="${APP_CATALOG_DIR:-$HOME/apps}"
 # 游戏开服脚本下载地址前缀
 GAMES_SCRIPT_BASE="${GAMES_SCRIPT_BASE:-https://raw.githubusercontent.com/kejilion/sh/main}"
 
-# 运行统计上报（默认关闭，不会向任何第三方发送信息）
-# 如需启用，请自行部署计数服务并填入 STATS_URL（返回含 daily_count/total_count 的 JSON）
-ENABLE_STATS="${ENABLE_STATS:-0}"
-STATS_URL=""
+# 运行次数统计（本地计数，不联网、不上报）
+# 默认记录到 /etc/vps-toolbox/stats，升级/重装不丢失；目录不可写时退回安装目录
+STATS_FILE="${STATS_FILE:-/etc/vps-toolbox/stats}"
 
 VPS_TOOLBOX_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 export VPS_TOOLBOX_ROOT

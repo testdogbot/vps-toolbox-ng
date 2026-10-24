@@ -56,7 +56,7 @@ if [ "$SRC" = "$INSTALL_DIR" ]; then
     exit 1
 fi
 
-# 保留已安装版本的本地 brand 配置（仓库地址、快捷命令、统计开关等）
+# 保留已安装版本的本地 brand 配置（仓库地址、快捷命令、统计位置等）
 if [ -f "$INSTALL_DIR/lib/branding.sh" ]; then
     PRESERVE_DIR="$(mktemp -d)"
     cp -f "$INSTALL_DIR/lib/branding.sh" "$PRESERVE_DIR/branding.sh"

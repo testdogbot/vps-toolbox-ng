@@ -34,7 +34,7 @@ vps-toolbox help       # 查看用法
 | 快捷命令 | 固定 `k` / `K` | `lib/branding.sh` 可配置，默认 `vps` / `vpst` |
 | 入口脚本 | 固定 `ssh_tool.sh` | `vps-toolbox.sh`，支持本地安装目录运行 |
 | 自更新 | 从 eooce 仓库拉取更新日志 | 读取本项目 `CHANGELOG.md`；配置仓库后拉取压缩包，校验版本、备份、失败回滚 |
-| 运行统计 | 每次启动上报 eooce 计数服务 | 默认关闭（`ENABLE_STATS=0`），不向第三方发送信息 |
+| 运行统计 | 每次启动上报 eooce 计数服务，显示全局次数 | 本地计数，显示本机当日/累计次数，不联网、不上报 |
 | 资源限制脚本 | 每次从 eooce 仓库下载 | 优先使用内置 `scripts/`，缺失时才回退下载 |
 | 菜单返回 | 重新下载远程脚本并执行 | 重新执行本地入口，无网络依赖 |
 | 输入方式 | `read -p` | `read -e`，支持行编辑 |
@@ -76,13 +76,13 @@ sudo bash vps-toolbox.sh
 vps-toolbox.sh          入口：加载 lib 与 modules，启动主循环
 install.sh              安装脚本
 lib/
-  branding.sh           品牌/仓库/快捷命令/统计开关（二次开发只改这里）
+  branding.sh           品牌/仓库/快捷命令/统计配置（二次开发只改这里）
   colors.sh             颜色变量
   common.sh             包管理、返回重载、端口检查、Docker/防火墙基础操作
   components.sh         Node.js、Java 安装
   ldnmp.sh              LDNMP 建站辅助函数
   shortcut.sh           快捷命令与包装器
-  stats.sh              运行统计（默认不调用）
+  stats.sh              运行统计（本地计数）
   menu.sh               主菜单展示与分支分派
 modules/
   00_update.sh          脚本更新
@@ -101,7 +101,7 @@ scripts/                资源限制等辅助脚本（crond 调用）
 
 - 新增主菜单项：在 `modules/` 加文件定义 `menu_xxx()`，再到 `lib/menu.sh` 的 `main_loop` 里加一行分派和菜单文案。
 - 所有模块在启动时 `source` 加载，模块文件内只定义函数和只读全局变量，不要写顶层执行语句。
-- 改名/换仓库/换快捷命令/开关统计，只改 `lib/branding.sh`。
+- 改名/换仓库/换快捷命令/统计文件位置，只改 `lib/branding.sh`。
 - 主菜单返回统一调用 `main_menu`，它会重新执行本地入口脚本。
 
 ## 已验证 / 未验证

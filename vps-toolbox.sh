@@ -70,9 +70,7 @@ if [ "${1:-}" = "update" ]; then
     exit $?
 fi
 
-if [ "${ENABLE_STATS}" = "1" ]; then
-    sum_run_times
-fi
+sum_run_times
 
 create_shortcut
 main_loop

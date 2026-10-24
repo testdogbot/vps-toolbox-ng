@@ -1,4 +1,5 @@
 .vps-toolbox-install
+.stats
 *.bak
 *.log
 .workbuddy-ai/
