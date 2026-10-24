@@ -21,11 +21,17 @@
 
 ## 安装
 
-```bash
-# 方式一：本地目录安装到 /opt/vps-toolbox
-sudo bash install.sh
+一行安装（从 GitHub 拉取并安装到 `/opt/vps-toolbox`）：
 
-# 方式二：发布到 GitHub 后，在 install.sh 顶部填写 REPO_URL 再执行
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/testdogbot/vps-toolbox-ng/main/install.sh)
+vps
+```
+
+本地目录安装：
+
+```bash
+sudo bash install.sh
 ```
 
 安装后可用 `vps`、`vpst` 或 `vps-toolbox` 启动。
