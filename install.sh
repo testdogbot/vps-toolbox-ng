@@ -3,7 +3,7 @@
 # 支持两种方式：本地目录安装 / 配置 REPO_URL 后从 GitHub 安装
 set -euo pipefail
 
-REPO_URL=""          # 发布后填写，例如 https://github.com/your-name/vps-toolbox
+REPO_URL="https://github.com/testdogbot/vps-toolbox-ng"
 BRANCH="main"
 INSTALL_DIR="/opt/vps-toolbox"
 MARKER=".vps-toolbox-install"
