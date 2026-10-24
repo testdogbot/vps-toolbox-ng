@@ -2,6 +2,9 @@
 # vps-toolbox 模块：测试脚本合集
 # 由 eooce/ssh_tool 的菜单分支机械抽取，逻辑保持原样
 menu_test_scripts() {
+    if ! confirm_action "本菜单会下载并执行第三方 root 脚本，确认进入？"; then
+        return 0
+    fi
     while true; do
       clear
       echo -e "${purple}▶ 测试脚本合集${re}"
@@ -30,7 +33,7 @@ menu_test_scripts() {
       echo "---------------------------"
       echo -e "${skyblue} 0. 返回主菜单${re}"
       echo "---------------------------"
-      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
       case $sub_choice in
           1)
               clear

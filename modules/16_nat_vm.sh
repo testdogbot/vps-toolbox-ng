@@ -2,6 +2,9 @@
 # vps-toolbox 模块：开设 NAT 小鸡
 # 由 eooce/ssh_tool 的菜单分支机械抽取，逻辑保持原样
 menu_nat_vm() {
+    if ! confirm_action "本菜单会下载并执行第三方 root 脚本，确认进入？"; then
+        return 0
+    fi
     while true; do
         clear
         echo -e "${purple}▶ 管理NAT小鸡${re}"
@@ -26,7 +29,7 @@ menu_nat_vm() {
         echo "------------------------"
         while :; do
             echo
-            read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+            read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
             if ! [[ "$sub_choice" =~ ^[0-9]+$ ]]; then
                 echo -e "${red}输入错误, 请输入0~10的数字!${re}"
                 continue
@@ -290,7 +293,7 @@ menu_nat_vm() {
                 echo "------------------------"
                 echo -e "${white}0. 返回上一级菜单${re}"
                 echo "------------------------"
-                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                 case $sub_choice in
                     1)
@@ -605,7 +608,7 @@ EOF
                 echo "------------------------"
                 echo -e "${white}0. 返回上一级菜单${re}"
                 echo "------------------------"
-                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                 case $sub_choice in
                     1)

@@ -4,6 +4,9 @@
 # 兼容 app 配置约定的 docker_app_plus / check_docker_app_ip 等入口
 
 APP_CATALOG_SYNC_FAILED=0
+# 兼容 0.2.0 升级上来的本机 branding：缺少这些键时使用内置默认值
+APP_CATALOG_REPO="${APP_CATALOG_REPO:-https://github.com/kejilion/apps.git}"
+APP_CATALOG_DIR="${APP_CATALOG_DIR:-$HOME/apps}"
 
 app_market_field() {
     local line
@@ -49,7 +52,7 @@ kpanel_app_port_in_use() {
 }
 
 app_market_catalog_sync() {
-    local dir="$APP_CATALOG_DIR" out
+    local dir="$APP_CATALOG_DIR" out stamp force="${1:-0}"
     APP_CATALOG_SYNC_FAILED=0
     install git >/dev/null 2>&1 || { echo -e "${red}git 安装失败，无法同步应用列表${re}"; return 1; }
 
@@ -58,20 +61,27 @@ app_market_catalog_sync() {
         return 1
     fi
 
-    if [ ! -d "$dir/.git" ]; then
-        mkdir -p "$(dirname "$dir")"
-        echo -e "${yellow}正在下载应用列表...${re}"
-        if ! timeout 90s git clone --depth=1 "$APP_CATALOG_REPO" "$dir"; then
-            echo -e "${red}应用列表下载失败${re}"
-            return 1
+    if [ -d "$dir/.git" ]; then
+        stamp="$dir/.vps-toolbox-sync"
+        if [ "$force" != "1" ] && [ -n "$(find "$stamp" -mmin -1440 2>/dev/null)" ]; then
+            return 0
         fi
+        echo -e "${yellow}正在检查应用列表更新...${re}"
+        if ! out=$(timeout 45s git -C "$dir" pull --ff-only 2>&1); then
+            echo -e "${yellow}应用列表更新失败，继续使用本地已有版本${re}"
+            APP_CATALOG_SYNC_FAILED=1
+        fi
+        date +%s > "$stamp" 2>/dev/null || true
         return 0
     fi
 
-    if ! out=$(timeout 45s git -C "$dir" pull --ff-only 2>&1); then
-        echo -e "${yellow}应用列表更新失败，继续使用本地已有版本${re}"
-        APP_CATALOG_SYNC_FAILED=1
+    mkdir -p "$(dirname "$dir")"
+    echo -e "${yellow}正在下载应用列表（最长 90 秒）...${re}"
+    if ! timeout 90s git clone --depth=1 "$APP_CATALOG_REPO" "$dir"; then
+        echo -e "${red}应用列表下载失败${re}"
+        return 1
     fi
+    date +%s > "$dir/.vps-toolbox-sync" 2>/dev/null || true
     return 0
 }
 
@@ -244,12 +254,22 @@ app_market_open() {
         echo -e "${red}应用配置不存在: ${conf}${re}"
         return 1
     fi
+    echo "配置文件: ${conf}"
+    echo -e "${yellow}该配置来自第三方应用目录，将以 root 权限在本机执行${re}"
+    confirm_action "确认打开该应用？" || { echo -e "${yellow}已取消${re}"; return 0; }
     # 配置在函数作用域内 source：local 变量与末尾的 docker_app_plus 调用都依赖这一点
     source "$conf"
 }
 
 app_market_open_by_id() {
-    local id="$1" conf="${APP_CATALOG_DIR}/${1}.conf" i
+    local id="$1" conf i
+    case "$id" in
+        ''|*..*|*[!A-Za-z0-9._-]*)
+            echo -e "${red}无效的应用 ID: ${id}${re}"
+            return 1
+            ;;
+    esac
+    conf="${APP_CATALOG_DIR}/${id}.conf"
     if [ ! -f "$conf" ]; then
         for i in "${!APP_IDS[@]}"; do
             if [ "${APP_IDS[i]}" = "$id" ]; then
@@ -288,6 +308,14 @@ app_market_restore() {
         echo -e "${red}备份文件不存在${re}"
         return 1
     fi
+    case "$file" in
+        /*) ;;
+        *) echo -e "${red}请使用绝对路径${re}"; return 1 ;;
+    esac
+    if ! tar -tzf "$file" >/dev/null 2>&1; then
+        echo -e "${red}备份文件无效或已损坏${re}"
+        return 1
+    fi
     echo -e "${red}还原会覆盖 /home 下的同名文件，请确认已完成当前数据备份${re}"
     read -e -r -p "确认还原 ${file}？[y/N]: " confirm
     [[ "$confirm" =~ ^[Yy]$ ]] || { echo -e "${yellow}已取消${re}"; return 0; }
@@ -315,6 +343,9 @@ menu_app_market() {
             echo -e "${yellow}在线更新失败，当前使用本地已有应用列表${re}"
         fi
         echo "共 ${#APP_CONF_FILES[@]} 个应用，应用由第三方目录提供，配置将以 root 权限在本机执行"
+        if [ "${#APP_CONF_FILES[@]}" -eq 0 ]; then
+            echo -e "${red}未找到应用配置，请检查网络或应用目录: ${APP_CATALOG_DIR}${re}"
+        fi
         echo "------------------------"
         local i name state
         for i in "${!APP_CONF_FILES[@]}"; do
@@ -337,7 +368,7 @@ menu_app_market() {
                 ;;
             u|U)
                 clear
-                app_market_catalog_sync && app_market_load_catalog
+                app_market_catalog_sync 1 && app_market_load_catalog
                 break_end
                 ;;
             b|B)

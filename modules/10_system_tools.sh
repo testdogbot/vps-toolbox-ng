@@ -30,7 +30,7 @@ menu_system_tools() {
       echo "------------------------"
       echo -e "${skyblue} 0. 返回主菜单${re}"
       echo "------------------------"
-      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
       case $sub_choice in
           1)
@@ -232,7 +232,7 @@ menu_system_tools() {
                     echo "-----------------------------------------------"
                     echo -e "${red}0.取消安装${re}"
                     echo "---------------------"
-                    read -e -p $'\033[1;35m请输入你的选择: \033[0m' sub_choice
+                    read -e -p $'\033[1;35m请输入你的选择: \033[0m' sub_choice || exit 0
                    
                     case $sub_choice in
                         1) 
@@ -618,7 +618,7 @@ menu_system_tools() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                   case $sub_choice in
                       1)
@@ -704,7 +704,7 @@ menu_system_tools() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                   case $sub_choice in
                       1)
@@ -818,7 +818,7 @@ EOF
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                   case $sub_choice in
                       1)
@@ -1240,14 +1240,14 @@ EOF
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                   case $sub_choice in
                       1)
                           read -e -p "请输入新任务的执行命令: " newquest
                           echo "------------------------"
                           echo "1. 每周任务                 2. 每天任务"
-                          read -e -p $'\033[1;91m请输入你的选择: \033[0m' dingshi
+                          read -e -p $'\033[1;91m请输入你的选择: \033[0m' dingshi || exit 0
 
                           case $dingshi in
                               1)
@@ -1290,7 +1290,7 @@ EOF
                 echo "------------------------"
                 echo "0. 返回上一级选单"
                 echo "------------------------"
-                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice   
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                 case $sub_choice in
                     1)
@@ -1407,7 +1407,7 @@ EOF
                 echo "------------------------"
                 echo "0. 返回上一级选单"
                 echo "------------------------"
-                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice   
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                 case $sub_choice in
                     1)
@@ -1498,7 +1498,7 @@ EOF
                 echo "------------------------"
                 echo " 0. 返回上一级选单"
                 echo "------------------------"
-                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                 case $sub_choice in
                     1) timedatectl set-timezone Asia/Shanghai ;;

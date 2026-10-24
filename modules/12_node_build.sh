@@ -2,6 +2,9 @@
 # vps-toolbox 模块：节点搭建合集
 # 由 eooce/ssh_tool 的菜单分支机械抽取，逻辑保持原样
 menu_node_build() {
+    if ! confirm_action "本菜单多数选项会下载并执行第三方 root 脚本，确认进入？"; then
+        return 0
+    fi
     while true; do
       clear
       echo -e "${purple}▶ 节点搭建脚本合集${re}"
@@ -23,7 +26,7 @@ menu_node_build() {
       echo "---------------------------------------------------------" 
       echo -e "${skyblue} 0. 返回主菜单${re}"
       echo "---------------"
-      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice   
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
       case $sub_choice in
 
@@ -106,7 +109,7 @@ menu_node_build() {
           echo "--------------"
           echo -e "${skyblue}0. 返回上一级菜单${re}"
           echo "--------------"
-          read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+          read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
             case $sub_choice in
                 1)
                   clear
@@ -251,7 +254,7 @@ menu_node_build() {
           echo "--------------"
           echo -e "${skyblue}0. 返回上一级菜单${re}"
           echo "--------------"
-          read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+          read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
             case $sub_choice in
                 1)
                   clear
@@ -347,7 +350,7 @@ menu_node_build() {
           echo "--------------"
           echo -e "${skyblue}0. 返回上一级菜单${re}"
           echo "--------------"
-          read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+          read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
             case $sub_choice in
                 1)
                     bash <(curl -Ls https://raw.githubusercontent.com/Misaka-blog/s-ui/master/install.sh)

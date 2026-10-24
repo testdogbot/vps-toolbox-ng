@@ -41,7 +41,7 @@ menu_ldnmp() {
     echo  "------------------------"
     echo  -e "${yellow} 0. 返回主菜单${re}"
     echo  "------------------------"
-    read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+    read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
 
     case $sub_choice in
@@ -578,7 +578,7 @@ menu_ldnmp() {
         echo "------------------------"
         echo "0. 返回上一级选单"
         echo "------------------------"
-        read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+        read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
         case $sub_choice in
             1)
                 read -e -p "请输入你的域名: " yuming
@@ -683,7 +683,7 @@ menu_ldnmp() {
 
       echo "------------------------"
       echo "1. 每周备份                 2. 每天备份"
-      read -e -p $'\033[1;91m请输入你的选择: \033[0m' dingshi
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' dingshi || exit 0
 
       case $dingshi in
           1)
@@ -730,7 +730,7 @@ menu_ldnmp() {
               echo "------------------------"
               echo "0. 退出"
               echo "------------------------"
-              read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+              read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
               case $sub_choice in
                   1)
                       sed -i 's/false/true/g' /etc/fail2ban/jail.d/sshd.local
@@ -859,7 +859,7 @@ menu_ldnmp() {
               echo "------------------------"
               echo "0. 退出"
               echo "------------------------"
-              read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+              read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
               case $sub_choice in
                   1)
                   # nginx调优

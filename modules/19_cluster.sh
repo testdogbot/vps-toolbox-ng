@@ -89,7 +89,8 @@ cluster_delete() {
     tmp=$(mktemp)
     grep -v -F -- "$target" "$CLUSTER_FILE" > "$tmp" || true
     local affected
-    affected=$(grep -F -c -- "$target" "$CLUSTER_FILE" 2>/dev/null || echo 0)
+    affected=$(grep -F -c -- "$target" "$CLUSTER_FILE" 2>/dev/null | head -n1)
+    affected="${affected:-0}"
     read -e -r -p "将删除 ${affected} 条匹配记录，确认？[y/N]: " confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         mv "$tmp" "$CLUSTER_FILE"
@@ -134,7 +135,7 @@ cluster_run() {
         echo ""
         echo -e "${skyblue}==> ${name:-$host} (${host}:${port:-22})${re}"
         if [ -n "$pass" ]; then
-            sshpass -p "$pass" ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 \
+            SSHPASS="$pass" sshpass -e ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 \
                 -p "${port:-22}" "${user:-root}@${host}" "$cmd"
         else
             ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 \
@@ -188,12 +189,20 @@ menu_cluster() {
             5) clear; cluster_run 'echo connected: $(hostname) $(uptime -p 2>/dev/null || uptime)'; break_end ;;
             11)
                 clear
-                cluster_run 'if command -v apt >/dev/null 2>&1; then apt update && DEBIAN_FRONTEND=noninteractive apt upgrade -y; elif command -v dnf >/dev/null 2>&1; then dnf upgrade -y; elif command -v yum >/dev/null 2>&1; then yum update -y; elif command -v apk >/dev/null 2>&1; then apk update && apk upgrade; else echo "不支持的系统"; exit 1; fi'
+                if confirm_action "将在所有服务器执行系统更新，可能耗时较长"; then
+                    cluster_run 'if command -v apt >/dev/null 2>&1; then apt update && DEBIAN_FRONTEND=noninteractive apt upgrade -y; elif command -v dnf >/dev/null 2>&1; then dnf upgrade -y; elif command -v yum >/dev/null 2>&1; then yum update -y; elif command -v apk >/dev/null 2>&1; then apk update && apk upgrade; else echo "不支持的系统"; exit 1; fi'
+                else
+                    echo -e "${yellow}已取消${re}"
+                fi
                 break_end
                 ;;
             12)
                 clear
-                cluster_run 'if command -v apt >/dev/null 2>&1; then apt autoremove -y && apt clean; elif command -v dnf >/dev/null 2>&1; then dnf autoremove -y; elif command -v yum >/dev/null 2>&1; then yum autoremove -y; fi; command -v docker >/dev/null 2>&1 && docker system prune -af >/dev/null; journalctl --vacuum-time=3d >/dev/null 2>&1; echo done'
+                if confirm_action "将在所有服务器清理系统，并执行 docker system prune -af（删除未使用的镜像/容器/网络）"; then
+                    cluster_run 'if command -v apt >/dev/null 2>&1; then apt autoremove -y && apt clean; elif command -v dnf >/dev/null 2>&1; then dnf autoremove -y; elif command -v yum >/dev/null 2>&1; then yum autoremove -y; fi; command -v docker >/dev/null 2>&1 && docker system prune -af >/dev/null; journalctl --vacuum-time=3d >/dev/null 2>&1; echo done'
+                else
+                    echo -e "${yellow}已取消${re}"
+                fi
                 break_end
                 ;;
             13)
@@ -203,7 +212,11 @@ menu_cluster() {
                 ;;
             14)
                 clear
-                cluster_run 'iptables -P INPUT ACCEPT; iptables -P FORWARD ACCEPT; iptables -P OUTPUT ACCEPT; iptables -F; echo "端口已全部开放"'
+                if confirm_action "将在所有服务器清空防火墙规则并全部放行（iptables -F），可能暴露服务"; then
+                    cluster_run 'iptables -P INPUT ACCEPT; iptables -P FORWARD ACCEPT; iptables -P OUTPUT ACCEPT; iptables -F; echo "端口已全部开放"'
+                else
+                    echo -e "${yellow}已取消${re}"
+                fi
                 break_end
                 ;;
             15)

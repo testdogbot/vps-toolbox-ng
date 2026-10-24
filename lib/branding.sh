@@ -3,7 +3,7 @@
 
 PROJECT_NAME="vps-toolbox"
 PROJECT_TITLE="VPS 工具箱"
-PROJECT_VERSION="0.3.0"
+PROJECT_VERSION="0.3.1"
 PROJECT_AUTHOR="testdogbot"
 
 # 你的 GitHub 仓库（留空表示尚未发布，快捷键与更新功能会退化为本地模式）

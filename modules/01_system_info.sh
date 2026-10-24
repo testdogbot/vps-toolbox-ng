@@ -35,10 +35,14 @@ menu_system_info() {
 
     disk_info=$(df -h | awk '$NF=="/"{printf "%d/%dGB (%s)", $3,$2,$5}')
 
-    country=$(curl -s ipinfo.io/country)
-    city=$(curl -s ipinfo.io/city)
-
-    isp_info=$(curl -s ipinfo.io/org)
+    local ipinfo
+    ipinfo=$(curl -s -m 5 ipinfo.io 2>/dev/null)
+    country=$(printf '%s\n' "$ipinfo" | sed -n 's/.*"country": "\([^"]*\)".*/\1/p')
+    city=$(printf '%s\n' "$ipinfo" | sed -n 's/.*"city": "\([^"]*\)".*/\1/p')
+    isp_info=$(printf '%s\n' "$ipinfo" | sed -n 's/.*"org": "\([^"]*\)".*/\1/p')
+    [ -z "$country" ] && country="未知"
+    [ -z "$city" ] && city="未知"
+    [ -z "$isp_info" ] && isp_info="未知"
 
     cpu_arch=$(uname -m)
 

@@ -8,6 +8,8 @@ ip_address() {
 
 # 安装依赖包
 
+PACKAGE_INDEX_UPDATED=0
+
 install() {
     if [ $# -eq 0 ]; then
         echo -e "${red}未提供软件包参数!${re}"
@@ -22,6 +24,10 @@ install() {
         fi
         echo -e "${yellow}正在安装 ${package}...${re}"
         if command -v apt &>/dev/null; then
+            if [ "$PACKAGE_INDEX_UPDATED" = "0" ]; then
+                apt update >/dev/null 2>&1 || true
+                PACKAGE_INDEX_UPDATED=1
+            fi
             DEBIAN_FRONTEND=noninteractive apt install -y "$package" || failed=1
         elif command -v dnf &>/dev/null; then
             dnf install -y "$package" || failed=1
@@ -101,6 +107,13 @@ break_end() {
     clear
 }
 
+# 危险/第三方操作确认：返回 0 表示用户确认
+confirm_action() {
+    local prompt="$1" answer
+    read -e -r -p "${prompt} [y/N]: " answer || return 1
+    [[ "$answer" =~ ^[Yy]$ ]]
+}
+
 # 返回主菜单：重新加载本地入口脚本（不依赖远程下载）
 main_menu() {
     cd ~
@@ -139,12 +152,35 @@ check_port() {
 
 install_docker() {
     if ! command -v docker &>/dev/null; then
-        curl -fsSL https://get.docker.com | sh && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
-        systemctl start docker
-        systemctl enable docker
-    else
-        echo "Docker 已经安装"
+        if ! curl -fsSL https://get.docker.com | sh; then
+            echo -e "${red}Docker 安装失败${re}"
+            return 1
+        fi
     fi
+
+    if command -v systemctl &>/dev/null; then
+        systemctl start docker >/dev/null 2>&1
+        systemctl enable docker >/dev/null 2>&1
+    elif command -v rc-service &>/dev/null; then
+        rc-service docker start >/dev/null 2>&1
+    fi
+
+    # 确保 docker compose 插件可用
+    if ! docker compose version >/dev/null 2>&1; then
+        if [ -x /usr/libexec/docker/cli-plugins/docker-compose ]; then
+            mkdir -p /usr/local/lib/docker/cli-plugins
+            ln -sfn /usr/libexec/docker/cli-plugins/docker-compose /usr/local/lib/docker/cli-plugins/docker-compose
+        else
+            install docker-compose-plugin >/dev/null 2>&1 || true
+        fi
+    fi
+
+    if ! docker info >/dev/null 2>&1; then
+        echo -e "${yellow}Docker 已安装但服务未就绪，请检查 docker 服务${re}"
+        return 1
+    fi
+    echo "Docker 已经安装"
+    return 0
 }
 
 

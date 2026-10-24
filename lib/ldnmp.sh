@@ -154,7 +154,14 @@ nginx_status() {
 add_yuming() {
       ip_address
       echo -e "先将域名解析到本机IP: \033[33m$ipv4_address  $ipv6_address\033[0m"
-      read -e -p "请输入你解析的域名: " yuming
+      while true; do
+          read -e -p "请输入你解析的域名: " yuming || { yuming=""; break; }
+          [ -z "$yuming" ] && break
+          if [[ "$yuming" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]]; then
+              break
+          fi
+          echo -e "${red}域名格式无效，请重新输入${re}"
+      done
 }
 
 
@@ -170,10 +177,21 @@ add_db() {
 
 reverse_proxy() {
       ip_address
-      wget -O /home/web/conf.d/$yuming.conf https://raw.githubusercontent.com/kejilion/nginx/main/reverse-proxy.conf
-      sed -i "s/yuming.com/$yuming/g" /home/web/conf.d/$yuming.conf
-      sed -i "s/0.0.0.0/$ipv4_address/g" /home/web/conf.d/$yuming.conf
-      sed -i "s/0000/$duankou/g" /home/web/conf.d/$yuming.conf
+      if [[ ! "$yuming" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]]; then
+          echo -e "${red}域名格式无效: ${yuming}${re}"
+          return 1
+      fi
+      if ! command -v wget >/dev/null 2>&1; then
+          install wget || return 1
+      fi
+      if ! wget -q -O "/home/web/conf.d/$yuming.conf" https://raw.githubusercontent.com/kejilion/nginx/main/reverse-proxy.conf; then
+          rm -f "/home/web/conf.d/$yuming.conf"
+          echo -e "${red}反代模板下载失败${re}"
+          return 1
+      fi
+      sed -i "s/yuming.com/$yuming/g" "/home/web/conf.d/$yuming.conf"
+      sed -i "s/0.0.0.0/$ipv4_address/g" "/home/web/conf.d/$yuming.conf"
+      sed -i "s/0000/$duankou/g" "/home/web/conf.d/$yuming.conf"
       docker restart nginx
 }
 
@@ -201,7 +219,7 @@ if docker inspect "$docker_name" &>/dev/null; then
     echo "------------------------"
     echo "0. 返回上一级选单"
     echo "------------------------"
-    read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+    read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || return 0
 
     case $sub_choice in
         1)

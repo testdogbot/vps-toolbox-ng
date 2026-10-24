@@ -44,7 +44,7 @@ menu_basic_tools() {
     while true; do
         clear
         show_basic_tools_menu
-        read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+        read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
         case "$sub_choice" in
             0)

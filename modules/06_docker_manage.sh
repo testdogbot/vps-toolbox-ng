@@ -21,7 +21,7 @@ menu_docker_manage() {
       echo "------------------------"
       echo -e "${skyblue} 0. 返回主菜单${re}"
       echo "------------------------"
-      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
       case $sub_choice in
           1)
@@ -69,7 +69,7 @@ menu_docker_manage() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                   case $sub_choice in
                       1)
@@ -172,7 +172,7 @@ menu_docker_manage() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                   case $sub_choice in
                       1)
@@ -248,7 +248,7 @@ menu_docker_manage() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                   case $sub_choice in
                       1)
@@ -296,7 +296,7 @@ menu_docker_manage() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice || exit 0
 
                   case $sub_choice in
                       1)
