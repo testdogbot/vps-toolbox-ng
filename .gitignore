@@ -1,0 +1,5 @@
+.vps-toolbox-install
+*.bak
+*.log
+.workbuddy-ai/
+.vscode/
