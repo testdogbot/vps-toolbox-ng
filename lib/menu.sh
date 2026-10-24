@@ -11,13 +11,20 @@ show_main_menu() {
         echo -e "\033[0;97m项目地址: ${PROJECT_REPO_URL}\033[0m"
     fi
     echo ""
-    echo -e "${skyblue}  __     __  ____    ____     _____  ___   ___   ____    __ __ ${re}"
-    echo -e "${skyblue}  \\ \\   / / |  _ \\  / ___|   |_   _|/ _ \\ / _ \\ |  _ \\  |  |  |${re}"
-    echo -e "${skyblue}   \\ \\ / /  | |_) | \\___ \\     | | | | | | | | | | |_) | |  |  |${re}"
-    echo -e "${skyblue}    \\ V /   |  __/   ___) |    | | | |_| | |_| | |  _ <  |  |  |${re}"
-    echo -e "${skyblue}     \\_/    |_|     |____/     |_|  \\___/ \\___/  |_| \\_\\ |__|__|${re}"
+    echo -e "${skyblue} __     ______  ____    _____ ___   ___  _     ____   _____  __${re}"
+    echo -e "${skyblue} \\ \\   / /  _ \\/ ___|  |_   _/ _ \\ / _ \\| |   | __ ) / _ \\ \\/ /${re}"
+    echo -e "${skyblue}  \\ \\ / /| |_) \\___ \\    | || | | | | | | |   |  _ \\| | | \\  /${re}"
+    echo -e "${skyblue}   \\ V / |  __/ ___) |   | || |_| | |_| | |___| |_) | |_| /  \\ ${re}"
+    echo -e "${skyblue}    \\_/  |_|   |____/    |_| \\___/ \\___/|_____|____/ \\___/_/\\_\\ ${re}"
     echo ""
-    echo -e "                 ${yellow}${PROJECT_TITLE} v${PROJECT_VERSION}${re}"
+    local title title_width pad banner_width=63
+    title="${PROJECT_TITLE} v${PROJECT_VERSION}"
+    title_width=$(printf '%s' "$title" | wc -L 2>/dev/null)
+    [[ "$title_width" =~ ^[0-9]+$ ]] || title_width=${#title}
+    pad=$(( (banner_width - title_width) / 2 ))
+    [ "$pad" -lt 0 ] && pad=0
+    printf '%*s' "$pad" ""
+    echo -e "${yellow}${title}${re}"
     echo -e "${yellow}支持Ubuntu/Debian/CentOS/Alpine/Fedora/Rocky/Almalinux/Oracle-linux${re}"
     echo -e "${skyblue}快捷命令${yellow}${SHORTCUT_NAMES[*]}${skyblue}，下次运行输入${yellow}${SHORTCUT_NAMES[0]}${skyblue}可快速启动${re}"
     echo "-------------------------------------------------------------------"
