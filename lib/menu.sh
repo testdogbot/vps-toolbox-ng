@@ -31,6 +31,8 @@ show_main_menu() {
     echo -e "${green}11. 我的工作区 ▶              15. 常用环境管理 ▶${re}"
     echo -e "${purple}12. 节点搭建合集 ▶            16. 开设NAT小鸡 ▶${re}"
     echo -e "${green}17. 基础工具 ▶${re}"
+    echo -e "${green}18. 应用市场 ▶                19. 服务器集群 ▶${re}"
+    echo -e "${green}20. 游戏开服 ▶${re}"
     echo "-------------------------------------------------------------------"
     echo -e "${green}00. 脚本更新${red}                  88. 退出脚本${re}"
     echo -e "${yellow}-------------------------------------------------------------------${re}"
@@ -59,6 +61,9 @@ main_loop() {
             15) menu_env_manage ;;
             16) menu_nat_vm ;;
             17) menu_basic_tools ;;
+            18) menu_app_market ;;
+            19) menu_cluster ;;
+            20) menu_games ;;
             00) menu_update_self ;;
             88) clear; exit 0 ;;
             *)  echo -e "${purple}无效的输入!${re}" ;;

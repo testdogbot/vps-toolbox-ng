@@ -19,3 +19,9 @@
 - 仓库：https://github.com/fscarmen/warp-sh
 - 说明：WARP 管理菜单（主菜单 7）在运行时下载并在本机执行该项目的 `menu.sh`。
   该项目未提供明确的开源许可证，因此本项目不内置、不分发其代码，只保留运行时调用。
+
+## kejilion/apps 与游戏脚本
+
+- 应用市场（主菜单 18）在运行时克隆 [kejilion/apps](https://github.com/kejilion/apps) 并执行其中的应用配置。
+- 游戏开服（主菜单 20）在运行时下载 `kejilion/sh` 中的 `palworld.sh`、`mc.sh`。
+- 以上内容均由第三方仓库提供，本项目不分发其代码，仅保留运行时获取；使用前请自行确认脚本与镜像来源。
