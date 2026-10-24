@@ -3,15 +3,78 @@
 # 支持两种方式：本地目录安装 / 配置 REPO_URL 后从 GitHub 安装
 set -euo pipefail
 
-REPO_URL="https://github.com/testdogbot/vps-toolbox-ng"
-BRANCH="main"
+REPO_URL="${VPS_TOOLBOX_REPO_URL:-https://github.com/testdogbot/vps-toolbox-ng}"
+BRANCH="${VPS_TOOLBOX_BRANCH:-main}"
+GH_PROXY="${VPS_TOOLBOX_GH_PROXY-https://ghfast.top}"
+CONNECT_TIMEOUT="${VPS_TOOLBOX_CONNECT_TIMEOUT:-10}"
+DOWNLOAD_TIMEOUT="${VPS_TOOLBOX_DOWNLOAD_TIMEOUT:-60}"
+SLOW_SECONDS="${VPS_TOOLBOX_SLOW_SECONDS:-20}"
 MARKER=".vps-toolbox-install"
 DEFAULT_INSTALL_DIR="/opt/vps-toolbox"
+REPO_URL="${REPO_URL%/}"
+GH_PROXY="${GH_PROXY%/}"
+DOWNLOAD_SECONDS=0
 
 if [ "$EUID" -ne 0 ]; then
     echo "请使用 root 运行: sudo bash install.sh"
     exit 1
 fi
+
+curl_hint() {
+    case "$1" in
+        6)  echo "DNS 解析失败" ;;
+        7)  echo "无法连接（被拒绝或网络不通）" ;;
+        22) echo "请求被中断或返回错误" ;;
+        28) echo "超时" ;;
+        35) echo "TLS 握手失败（可能被干扰）" ;;
+        56) echo "连接被重置" ;;
+        *)  echo "curl 退出码 $1" ;;
+    esac
+}
+
+download_source() {
+    local archive="$1" base label rc start elapsed total=0
+    local bases=("$REPO_URL")
+    if [ -n "$GH_PROXY" ]; then
+        bases+=("${GH_PROXY}/${REPO_URL}")
+    fi
+    for base in "${bases[@]}"; do
+        if [ "$base" = "$REPO_URL" ]; then
+            label="GitHub 直连"
+        else
+            label="镜像 ${GH_PROXY}"
+        fi
+        echo "正在从 ${label} 下载安装包..."
+        start=$SECONDS
+        rc=0
+        curl -fsSL --connect-timeout "$CONNECT_TIMEOUT" --max-time "$DOWNLOAD_TIMEOUT" \
+            -o "${archive}.part" "${base}/archive/refs/heads/${BRANCH}.tar.gz" || rc=$?
+        elapsed=$((SECONDS - start))
+        total=$((total + elapsed))
+        if [ "$rc" -eq 0 ] && [ -s "${archive}.part" ]; then
+            rm -rf "${TMP_DIR}/src"
+            mkdir -p "${TMP_DIR}/src"
+            if tar -xzf "${archive}.part" -C "${TMP_DIR}/src" --strip-components=1 2>/dev/null && [ -f "${TMP_DIR}/src/vps-toolbox.sh" ]; then
+                mv -f "${archive}.part" "$archive"
+                if [ "$elapsed" -ge "$SLOW_SECONDS" ]; then
+                    echo "提示：${label} 耗时 ${elapsed} 秒，网络较慢。"
+                fi
+                DOWNLOAD_SECONDS=$total
+                return 0
+            fi
+            echo "提示：${label} 返回的安装包不完整或无法解压。"
+        else
+            if [ "$rc" -eq 28 ]; then
+                echo "提示：${label} 下载超时（上限 ${DOWNLOAD_TIMEOUT} 秒）"
+            else
+                echo "提示：${label} 下载失败：$(curl_hint "$rc")（耗时 ${elapsed} 秒）"
+            fi
+        fi
+        rm -f "${archive}.part"
+    done
+    DOWNLOAD_SECONDS=$total
+    return 1
+}
 
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TMP_DIR=""
@@ -28,11 +91,20 @@ if [ -f "$SRC_DIR/vps-toolbox.sh" ]; then
     SRC="$SRC_DIR"
 elif [ -n "$REPO_URL" ]; then
     TMP_DIR="$(mktemp -d)"
-    if ! curl -fsSL "$REPO_URL/archive/refs/heads/$BRANCH.tar.gz" | tar -xz -C "$TMP_DIR" --strip-components=1; then
-        echo "下载安装包失败，请检查网络。"
+    if ! download_source "${TMP_DIR}/src.tar.gz"; then
+        echo ""
+        echo "下载安装包失败：GitHub 直连与镜像均不可达或响应超时。"
+        echo "可能原因：服务器无法访问 GitHub（国内节点常见）、DNS 异常或没有出网。"
+        echo "可尝试："
+        echo "  1) 换镜像：VPS_TOOLBOX_GH_PROXY=https://你的镜像 bash install.sh"
+        echo "  2) 使用代理：export https_proxy=http://127.0.0.1:端口 后重试"
+        echo "  3) 无外网：把源码目录上传到服务器后，直接运行其中的 install.sh"
         exit 1
     fi
-    SRC="$TMP_DIR"
+    if [ "$DOWNLOAD_SECONDS" -ge 30 ]; then
+        echo "提示：本次下载共耗时 ${DOWNLOAD_SECONDS} 秒，网络较慢，建议配置镜像或代理。"
+    fi
+    SRC="${TMP_DIR}/src"
 else
     echo "未找到本地源码，且未配置 REPO_URL。"
     echo "请在脚本顶部填写你的仓库地址，或进入项目目录后运行本脚本。"

@@ -62,6 +62,62 @@ update_fix_permissions() {
     fi
 }
 
+update_curl_hint() {
+    case "$1" in
+        6)  echo "DNS 解析失败" ;;
+        7)  echo "无法连接（被拒绝或网络不通）" ;;
+        22) echo "请求被中断或返回错误" ;;
+        28) echo "超时" ;;
+        35) echo "TLS 握手失败（可能被干扰）" ;;
+        56) echo "连接被重置" ;;
+        *)  echo "curl 退出码 $1" ;;
+    esac
+}
+
+# 下载更新包：先直连 GitHub，失败或超时后自动回退镜像
+update_download_archive() {
+    local archive="$1" base label rc start elapsed total=0
+    local bases=("${PROJECT_REPO_URL}")
+    if [ -n "${PROJECT_GH_PROXY:-}" ]; then
+        bases+=("${PROJECT_GH_PROXY%/}/${PROJECT_REPO_URL}")
+    fi
+    for base in "${bases[@]}"; do
+        if [ "$base" = "${PROJECT_REPO_URL}" ]; then
+            label="GitHub 直连"
+        else
+            label="镜像 ${PROJECT_GH_PROXY}"
+        fi
+        echo "正在从 ${label} 下载..."
+        start=$SECONDS
+        rc=0
+        curl -fsSL --connect-timeout "${PROJECT_CONNECT_TIMEOUT:-10}" \
+            --max-time "${PROJECT_DOWNLOAD_TIMEOUT:-60}" \
+            -o "${archive}.part" "${base}/archive/refs/heads/${PROJECT_BRANCH}.tar.gz" || rc=$?
+        elapsed=$((SECONDS - start))
+        total=$((total + elapsed))
+        if [ "$rc" -eq 0 ] && tar -tzf "${archive}.part" >/dev/null 2>&1; then
+            mv -f "${archive}.part" "$archive"
+            if [ "$elapsed" -ge "${PROJECT_SLOW_SECONDS:-20}" ]; then
+                echo -e "${yellow}提示：${label} 耗时 ${elapsed} 秒，网络较慢${re}"
+            fi
+            UPDATE_DL_LABEL="$label"
+            UPDATE_DL_SECONDS=$total
+            return 0
+        fi
+        rm -f "${archive}.part"
+        if [ "$rc" -eq 28 ]; then
+            echo -e "${yellow}${label} 下载超时（上限 ${PROJECT_DOWNLOAD_TIMEOUT:-60} 秒）${re}"
+        elif [ "$rc" -ne 0 ]; then
+            echo -e "${yellow}${label} 下载失败：$(update_curl_hint "$rc")（耗时 ${elapsed} 秒）${re}"
+        else
+            echo -e "${yellow}${label} 返回的安装包不完整${re}"
+        fi
+    done
+    UPDATE_DL_SECONDS=$total
+    return 1
+}
+
+
 menu_update_self() {
     clear
     echo "▶ 脚本更新"
@@ -84,11 +140,22 @@ menu_update_self() {
     tmp_dir="$(mktemp -d)"
     archive="${tmp_dir}/update.tar.gz"
 
-    echo "正在从 ${PROJECT_REPO_URL} 下载..."
-    if ! curl -fsSL --max-time 60 -o "$archive" "${PROJECT_REPO_URL}/archive/refs/heads/${PROJECT_BRANCH}.tar.gz"; then
+    if ! update_download_archive "$archive"; then
         rm -rf "$tmp_dir"
         echo -e "${red}下载失败，已保留当前版本${re}"
+        echo "可能原因：服务器无法访问 GitHub（国内节点常见）、DNS 异常或没有出网。"
+        echo "可尝试："
+        if [ -n "${PROJECT_GH_PROXY:-}" ]; then
+            echo "  1) 换镜像：export PROJECT_GH_PROXY=https://你的镜像 后重试（当前 ${PROJECT_GH_PROXY}）"
+        else
+            echo "  1) 配置镜像：在 lib/branding.sh 设置 PROJECT_GH_PROXY=\"https://ghfast.top\""
+        fi
+        echo "  2) 使用代理：export https_proxy=http://127.0.0.1:端口 后重试"
+        echo "  3) 无外网：手动上传新版覆盖 ${VPS_TOOLBOX_ROOT}"
         return 1
+    fi
+    if [ "$UPDATE_DL_SECONDS" -ge 30 ]; then
+        echo -e "${yellow}提示：本次下载共耗时 ${UPDATE_DL_SECONDS} 秒，网络较慢${re}"
     fi
 
     if ! tar -xzf "$archive" -C "$tmp_dir" --strip-components=1 2>/dev/null || [ ! -f "${tmp_dir}/vps-toolbox.sh" ]; then

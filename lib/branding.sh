@@ -3,12 +3,15 @@
 
 PROJECT_NAME="vps-toolbox"
 PROJECT_TITLE="VPS 工具箱"
-PROJECT_VERSION="0.3.3"
+PROJECT_VERSION="0.3.4"
 PROJECT_AUTHOR="testdogbot"
 
 # 你的 GitHub 仓库（留空表示尚未发布，快捷键与更新功能会退化为本地模式）
 PROJECT_REPO_URL="https://github.com/testdogbot/vps-toolbox-ng"
 PROJECT_BRANCH="main"
+
+# GitHub 镜像前缀：直连失败或超时后自动回退（国内服务器常用）；置空则只走直连
+PROJECT_GH_PROXY="${PROJECT_GH_PROXY-https://ghfast.top}"
 
 # 在线入口脚本地址（可选）。本项目为多文件结构，快捷命令直接执行本地入口，
 # 该项仅用于自定义分发（如安装提示、外部文档引用）；留空不影响使用

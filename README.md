@@ -33,7 +33,7 @@ vps-toolbox help       # 查看用法
 | 代码结构 | 单文件 6978 行 | `lib/` 公共函数 + `modules/` 按菜单分支拆分 |
 | 快捷命令 | 固定 `k` / `K` | `lib/branding.sh` 可配置，默认 `vps` / `vpst` |
 | 入口脚本 | 固定 `ssh_tool.sh` | `vps-toolbox.sh`，支持本地安装目录运行 |
-| 自更新 | 从 eooce 仓库拉取更新日志 | 读取本项目 `CHANGELOG.md`；配置仓库后拉取压缩包，校验版本、备份、失败回滚 |
+| 自更新 | 从 eooce 仓库拉取更新日志 | 读取本项目 `CHANGELOG.md`；配置仓库后拉取压缩包，校验版本、备份、失败回滚；下载超时/失败自动回退镜像并说明原因 |
 | 运行统计 | 每次启动上报 eooce 计数服务，显示全局次数 | 本地计数，显示本机当日/累计次数，不联网、不上报 |
 | 资源限制脚本 | 每次从 eooce 仓库下载 | 优先使用内置 `scripts/`，缺失时才回退下载 |
 | 菜单返回 | 重新下载远程脚本并执行 | 重新执行本地入口，无网络依赖 |
@@ -41,11 +41,26 @@ vps-toolbox help       # 查看用法
 
 ## 安装
 
-一行安装（从 GitHub 拉取并安装到 `/opt/vps-toolbox`）：
+一行安装（从 GitHub 拉取并安装到 `/opt/vps-toolbox`）。脚本下载带 10 秒连接、60 秒总超时，失败会明确报错；安装包下载失败或过慢时自动回退到镜像：
 
 ```bash
-sudo bash <(curl -fsSL https://raw.githubusercontent.com/testdogbot/vps-toolbox-ng/main/install.sh)
+URL=https://raw.githubusercontent.com/testdogbot/vps-toolbox-ng/main/install.sh
+if curl -fsSL --connect-timeout 10 -m 60 -o /tmp/vps-install.sh "$URL" ||
+   curl -fsSL --connect-timeout 10 -m 60 -o /tmp/vps-install.sh "https://ghfast.top/$URL"; then
+    sudo bash /tmp/vps-install.sh
+else
+    echo "安装脚本下载失败：服务器可能无法访问 GitHub（国内节点常见），可上传源码后本地安装。"
+fi
 vps
+```
+
+国内服务器可显式指定镜像或代理（镜像由第三方转发，请自行确认可信度）：
+
+```bash
+# 显式指定镜像（安装脚本下载安装包时自动使用）
+sudo VPS_TOOLBOX_GH_PROXY=https://ghfast.top bash /tmp/vps-install.sh
+# 或先设置代理（当前 shell 生效）
+export https_proxy=http://127.0.0.1:端口 && sudo -E bash /tmp/vps-install.sh
 ```
 
 本地目录安装：
