@@ -26,7 +26,7 @@ menu_nat_vm() {
         echo "------------------------"
         while :; do
             echo
-            read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+            read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
             if ! [[ "$sub_choice" =~ ^[0-9]+$ ]]; then
                 echo -e "${red}输入错误, 请输入0~10的数字!${re}"
                 continue
@@ -53,7 +53,7 @@ menu_nat_vm() {
 
                 elif echo "$output" | grep -q "本机符合要求：可以使用PVE虚拟化KVM服务器，并可以在开出来的KVM服务器选项中开启KVM硬件虚拟化"; then
                     echo -e "${green}本机符合开设kvm小鸡的要求${re}"
-                    read -p $'\033[1;35m确定要开设kvm小鸡吗？ [y/n]: \033[0m' confirm
+                    read -e -p $'\033[1;35m确定要开设kvm小鸡吗？ [y/n]: \033[0m' confirm
                     sleep 1
                     if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
                         echo ""
@@ -67,7 +67,7 @@ menu_nat_vm() {
                         curl -L https://raw.githubusercontent.com/spiritLHLS/pve/main/scripts/install_pve.sh -o install_pve.sh && chmod +x install_pve.sh && bash install_pve.sh
                         sleep 1
                         echo -e "${yellow}请等待20秒后重启后运行第2步${re}"
-                        read -p $'\033[1;96m需要立即重启吗？ [y/n]: \033[0m' confirm
+                        read -e -p $'\033[1;96m需要立即重启吗？ [y/n]: \033[0m' confirm
                         if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
                             sleep 1
                             reboot
@@ -96,7 +96,7 @@ menu_nat_vm() {
             2)
                 clear
 
-                read -p $'\033[1;96m确认你已执行完第1步，是否继续 [y/n]: \033[0m' confirm
+                read -e -p $'\033[1;96m确认你已执行完第1步，是否继续 [y/n]: \033[0m' confirm
                 if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
 
                     sleep 1
@@ -111,7 +111,7 @@ menu_nat_vm() {
                     echo -e "${yellow}KVM虚拟化开设出的虚拟机，默认生成的用户名不是root，请确保你已在root下运行及修改root密码${re}"
 
                     while true; do
-                        read -p $'\033[1;96m你需要手动开设kvm小鸡还是批量开设kvm小鸡？(1：手动开设  2：自动批量开设) \033[0m' choose
+                        read -e -p $'\033[1;96m你需要手动开设kvm小鸡还是批量开设kvm小鸡？(1：手动开设  2：自动批量开设) \033[0m' choose
 
                         if [ "$choose" == "1" ]; then
                             sleep 1
@@ -168,7 +168,7 @@ menu_nat_vm() {
                     echo ""
                     echo -e "${green}你的vps已通过检测，可以开设LXC小鸡${re}"
 
-                    read -p $'\033[1;35m确定要开设LXC小鸡吗？ [y/n]: \033[0m' confirm
+                    read -e -p $'\033[1;35m确定要开设LXC小鸡吗？ [y/n]: \033[0m' confirm
 
                         if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
 
@@ -205,7 +205,7 @@ menu_nat_vm() {
                                 echo ""
                                 echo -e "${yellow}温馨提醒:如果你开设的小鸡数量较多建议reboot重启一次系统使配置生效，再进入管理LXC小鸡菜单${purple}新增即可${re}"
                                 echo ""
-                                read -p $'\033[1;35m选择哪种方式开设LXC小鸡？\n1:普通批量生成(256RAM+1G+上下行限制300Mb)  \n2:自定义配置批量生成  \n3:取消开小鸡 \n4:重启系统 \n请选择： \033[0m' confirm
+                                read -e -p $'\033[1;35m选择哪种方式开设LXC小鸡？\n1:普通批量生成(256RAM+1G+上下行限制300Mb)  \n2:自定义配置批量生成  \n3:取消开小鸡 \n4:重启系统 \n请选择： \033[0m' confirm
 
                                 case $confirm in
                                     1)
@@ -214,7 +214,7 @@ menu_nat_vm() {
                                         install screen wget sudo dos2unix jq
                                         curl -L https://raw.githubusercontent.com/oneclickvirt/lxd/main/scripts/init.sh -o init.sh && chmod +x init.sh && dos2unix init.sh
                                         
-                                        read -p $'\033[1;35m请输入你要生成小鸡的数量：\033[0m' number
+                                        read -e -p $'\033[1;35m请输入你要生成小鸡的数量：\033[0m' number
                                         sleep 1
                                         install screen
                                         echo -e "${green}正在后台自动为你开设小鸡中，可关闭SSH，完成后运行cat log查看信息${re}"
@@ -290,7 +290,7 @@ menu_nat_vm() {
                 echo "------------------------"
                 echo -e "${white}0. 返回上一级菜单${re}"
                 echo "------------------------"
-                read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                 case $sub_choice in
                     1)
@@ -316,7 +316,7 @@ menu_nat_vm() {
 
                     4)
                         clear
-                        read -p $'\033[1;35m请输入要暂停的小鸡的名字（如ex1，nat1等）：\033[0m' nat
+                        read -e -p $'\033[1;35m请输入要暂停的小鸡的名字（如ex1，nat1等）：\033[0m' nat
                         lxc stop $nat
                         info_output=$(lxc info $nat)
 
@@ -336,7 +336,7 @@ menu_nat_vm() {
 
                     5)
                         clear
-                        read -p $'\033[1;35m请输入要启动的小鸡的名字（如ex1，nat1等）: \033[0m' nat
+                        read -e -p $'\033[1;35m请输入要启动的小鸡的名字（如ex1，nat1等）: \033[0m' nat
                         lxc start $nat
                         info_output=$(lxc info ${nat})
 
@@ -357,7 +357,7 @@ menu_nat_vm() {
 
                     6)
                         clear
-                        read -p $'\033[1;35m请输入要重装系统的小鸡的名字（如ex1，nat1等）: \033[0m' nat
+                        read -e -p $'\033[1;35m请输入要重装系统的小鸡的名字（如ex1，nat1等）: \033[0m' nat
                         lxc stop $nat && lxc rebuild images:debian/11 $nat
                         sleep 2
                         lxc start $nat
@@ -367,7 +367,7 @@ menu_nat_vm() {
                     ;;
 
                     7)
-                        read -p $'\033[1;35m确定要新增LXC小鸡吗？ [y/n]: \033[0m' confirm
+                        read -e -p $'\033[1;35m确定要新增LXC小鸡吗？ [y/n]: \033[0m' confirm
 
                         if [[ "$confirm" =~ ^[Yy]$ ]]; then   
                             echo -e "${green}输入配置后将进入后台为你新增，可关闭SSH，完成后cat log查看信息${re}"
@@ -382,7 +382,7 @@ menu_nat_vm() {
 
                     8)
                         clear
-                        read -p $'\033[1;35m请输入要删除的小鸡的名字（如ex1，nat1等）: \033[0m' nat
+                        read -e -p $'\033[1;35m请输入要删除的小鸡的名字（如ex1，nat1等）: \033[0m' nat
                         lxc delete -f $nat
                         sleep 2
                         echo -e "${green}${nat}小鸡已删除${re}"
@@ -392,7 +392,7 @@ menu_nat_vm() {
 
                     9)
                         clear
-                        read -p $'\033[1;35m删除后无法恢复，确定要继续删除所有Lxc小鸡吗 [y/n]: \033[0m' confirm
+                        read -e -p $'\033[1;35m删除后无法恢复，确定要继续删除所有Lxc小鸡吗 [y/n]: \033[0m' confirm
 
                         if [[ "$confirm" =~ ^[Yy]$ ]]; then   
                             lxc list -c n --format csv | xargs -I {} lxc delete -f {}
@@ -444,7 +444,7 @@ menu_nat_vm() {
                 sleep 2
 
                 while true; do
-                    read -p $'\033[1;96m你需要单独开设Docker小鸡还是批量开设Docker小鸡？(1：单个开设  2：批量开设 3：重启系统) \033[0m' choose
+                    read -e -p $'\033[1;96m你需要单独开设Docker小鸡还是批量开设Docker小鸡？(1：单个开设  2：批量开设 3：重启系统) \033[0m' choose
 
                     if [ "$choose" == "1" ]; then
                         sleep 1
@@ -489,7 +489,7 @@ menu_nat_vm() {
 
                     echo -e "${green}你的vps符合开设incus要求，可以开设incus小鸡${re}"
 
-                    read -p $'\033[1;35m确定要开设incus小鸡吗？ [y/n]: \033[0m' confirm
+                    read -e -p $'\033[1;35m确定要开设incus小鸡吗？ [y/n]: \033[0m' confirm
 
                         if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
 
@@ -530,7 +530,7 @@ EOF
                                 echo ""
                                 echo -e "${yellow}温馨提醒:如果你开设的小鸡数量较多建议reboot重启一次系统使配置生效，再进入管理incus小鸡菜单${purple}新增即可${re}"
                                 echo ""
-                                read -p $'\033[1;35m选择哪种方式开设incus小鸡？\n1:普通批量生成(256RAM+1G+上下行300Mb)  \n2:自定义配置批量生成  \n3:取消开小鸡 \n4:重启系统 \n请选择： \033[0m' confirm
+                                read -e -p $'\033[1;35m选择哪种方式开设incus小鸡？\n1:普通批量生成(256RAM+1G+上下行300Mb)  \n2:自定义配置批量生成  \n3:取消开小鸡 \n4:重启系统 \n请选择： \033[0m' confirm
 
                                 case $confirm in
                                     1)
@@ -538,7 +538,7 @@ EOF
                                         sleep 1
                                         curl -L https://raw.githubusercontent.com/oneclickvirt/incus/main/scripts/init.sh -o init.sh && chmod +x init.sh && dos2unix init.sh
                                         
-                                        read -p $'\033[1;35m请输入你要生成小鸡的数量：\033[0m' number
+                                        read -e -p $'\033[1;35m请输入你要生成小鸡的数量：\033[0m' number
                                         sleep 1
                                         install screen
                                         echo -e "${green}正在后台自动为你开设小鸡中，可关闭SSH，完成后运行cat log查看小鸡信息${re}"
@@ -605,7 +605,7 @@ EOF
                 echo "------------------------"
                 echo -e "${white}0. 返回上一级菜单${re}"
                 echo "------------------------"
-                read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                 case $sub_choice in
                     1)
@@ -631,7 +631,7 @@ EOF
 
                     4)
                         clear
-                        read -p $'\033[1;35m请输入要暂停的小鸡的名字（如ex1，nat1等）：\033[0m' nat
+                        read -e -p $'\033[1;35m请输入要暂停的小鸡的名字（如ex1，nat1等）：\033[0m' nat
                         incus stop $nat
                         info_output=$(incus info $nat)
 
@@ -651,7 +651,7 @@ EOF
 
                     5)
                         clear
-                        read -p $'\033[1;35m请输入要启动的小鸡的名字（如ex1，nat1等）: \033[0m' nat
+                        read -e -p $'\033[1;35m请输入要启动的小鸡的名字（如ex1，nat1等）: \033[0m' nat
                         incus start $nat
                         info_output=$(incus info ${nat})
 
@@ -672,7 +672,7 @@ EOF
 
                     6)
                         clear
-                        read -p $'\033[1;35m请输入要重装系统的小鸡的名字（如ex1，nat1等）: \033[0m' nat
+                        read -e -p $'\033[1;35m请输入要重装系统的小鸡的名字（如ex1，nat1等）: \033[0m' nat
                         incus stop $nat && incus rebuild images:debian/11 $nat
                         sleep 2
                         incus start $nat
@@ -681,7 +681,7 @@ EOF
                         break_end
                     ;;
                     7)
-                        read -p $'\033[1;35m确定要新增incus小鸡吗？ [y/n]: \033[0m' confirm
+                        read -e -p $'\033[1;35m确定要新增incus小鸡吗？ [y/n]: \033[0m' confirm
 
                         if [[ "$confirm" =~ ^[Yy]$ ]]; then   
                             echo -e "${green}输入配置后将进入后台为你新增incus小鸡，可关闭SSH，完成后cat log查看信息${re}"
@@ -695,7 +695,7 @@ EOF
                     ;;
                     8)
                         clear
-                        read -p $'\033[1;35m请输入要删除的小鸡的名字（如ex1，nat1等）: \033[0m' nat
+                        read -e -p $'\033[1;35m请输入要删除的小鸡的名字（如ex1，nat1等）: \033[0m' nat
                         incus delete -f $nat
                         sleep 2
                         echo -e "${green}${nat}小鸡已删除${re}"
@@ -705,7 +705,7 @@ EOF
 
                     9)
                         clear
-                        read -p $'\033[1;35m删除后无法恢复，确定要继续删除所有incus小鸡吗 [y/n]: \033[0m' confirm
+                        read -e -p $'\033[1;35m删除后无法恢复，确定要继续删除所有incus小鸡吗 [y/n]: \033[0m' confirm
 
                         if [[ "$confirm" =~ ^[Yy]$ ]]; then   
                             incus list -c n --format csv | xargs -I {} incus delete -f {}

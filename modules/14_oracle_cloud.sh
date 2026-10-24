@@ -16,7 +16,7 @@ menu_oracle_cloud() {
       echo "------------------------"
       echo -e "${skyblue}0. 返回主菜单${re}"
       echo "------------------------"
-      read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
       case $sub_choice in
           1)
@@ -25,7 +25,7 @@ menu_oracle_cloud() {
             ;; 
           2)
               clear
-              read -p $'\033[1;33m请设置你的root密码: \033[0m' pswd
+              read -e -p $'\033[1;33m请设置你的root密码: \033[0m' pswd
               echo "root:$pswd" | chpasswd
               sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config;
               sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config;
@@ -35,12 +35,12 @@ menu_oracle_cloud() {
           3)
           clear
           echo "请备份数据，将为你重装系统，预计花费15分钟。"
-          read -p "确定继续吗？(Y/N): " choice
+          read -e -p "确定继续吗？(Y/N): " choice
 
           case "$choice" in
             [Yy])
               while true; do
-                read -p "请选择要重装的系统:  1. Debian12 | 2. Ubuntu20.04 : " sys_choice
+                read -e -p "请选择要重装的系统:  1. Debian12 | 2. Ubuntu20.04 : " sys_choice
 
                 case "$sys_choice" in
                   1)
@@ -57,7 +57,7 @@ menu_oracle_cloud() {
                 esac
               done
 
-              read -p "请输入你重装后的密码: " vpspasswd
+              read -e -p "请输入你重装后的密码: " vpspasswd
               install wget
               bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/MoeClub/Note/master/InstallNET.sh') $xitong -v 64 -p $vpspasswd -port 22
               ;;
@@ -80,7 +80,7 @@ menu_oracle_cloud() {
               echo ""
               echo -e "${yellow}3：获取甲骨文云${purple}api密钥${yellow}下载文件并复制内容保存，获取方式在甲骨文云控制台右上角头像--我的概要信息里${re}"
               echo ""
-              read -p $'\033[1;91m确定要继续吗？[y/n]: \033[0m' confirm
+              read -e -p $'\033[1;91m确定要继续吗？[y/n]: \033[0m' confirm
               echo ""
 
                 if [[ $confirm =~ ^[Yy]$ ]]; then
@@ -129,7 +129,7 @@ menu_oracle_cloud() {
                     echo ""
                     echo -e "${yellow}3：将甲骨文云api密钥文件上传至root目录内，并复制文件路径保存，api密钥最后一行的路径改为此路径${re}"
                     echo ""                    
-                    read -p $'\033[1;91m是否已完成以上步骤？[y/n]: \033[0m' confirm
+                    read -e -p $'\033[1;91m是否已完成以上步骤？[y/n]: \033[0m' confirm
                         sleep 1
                         if [[ $confirm =~ ^[Yy]$ ]]; then
                             # 使用 nano 编辑器打开文件
@@ -142,7 +142,7 @@ menu_oracle_cloud() {
                             echo -e "${purple}编辑完成后，请按顺序输入命令(Ctrl+O, Enter, Ctrl+X)保存退出${re}"
                             sleep 2
                             echo ""
-                            read -p $'\033[1;91m是否清楚以上步骤？[y/n]: \033[0m' confirm
+                            read -e -p $'\033[1;91m是否清楚以上步骤？[y/n]: \033[0m' confirm
 
                             if [[ $confirm =~ ^[Yy]$ ]]; then
                                 sleep 1

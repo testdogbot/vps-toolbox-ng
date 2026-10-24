@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# vps-toolbox 模块：系统信息
-# 由 eooce/ssh_tool 的菜单分支机械抽取，逻辑保持原样
+# vps-toolbox 模块：系统信息（参考 kejilion/sh 的 linux_info 补充频率/负载/DNS/连接数）
 menu_system_info() {
     clear
     ip_address
@@ -11,8 +10,24 @@ menu_system_info() {
       cpu_info=$(lscpu | grep 'Model name' | sed -e 's/Model name[[:space:]]*: //')
     fi
 
-    cpu_usage=$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}')
-    cpu_usage_percent=$(printf "%.2f" "$cpu_usage")%
+    cpu_freq=$(awk -F': ' '/cpu MHz/{printf "%.1f GHz", $2/1000; exit}' /proc/cpuinfo 2>/dev/null)
+    [ -z "$cpu_freq" ] && cpu_freq="未知"
+
+    # 两次采样 /proc/stat 计算 CPU 占用，避免依赖 top 的输出格式
+    read -r _ cpu_user cpu_nice cpu_system cpu_idle cpu_iowait cpu_irq cpu_softirq cpu_steal _ < /proc/stat
+    cpu_total1=$((cpu_user + cpu_nice + cpu_system + cpu_idle + cpu_iowait + cpu_irq + cpu_softirq + cpu_steal))
+    cpu_idle1=$((cpu_idle + cpu_iowait))
+    sleep 1
+    read -r _ cpu_user cpu_nice cpu_system cpu_idle cpu_iowait cpu_irq cpu_softirq cpu_steal _ < /proc/stat
+    cpu_total2=$((cpu_user + cpu_nice + cpu_system + cpu_idle + cpu_iowait + cpu_irq + cpu_softirq + cpu_steal))
+    cpu_idle2=$((cpu_idle + cpu_iowait))
+    if [ $((cpu_total2 - cpu_total1)) -gt 0 ]; then
+        cpu_usage_percent=$(( 100 * ((cpu_total2 - cpu_total1) - (cpu_idle2 - cpu_idle1)) / (cpu_total2 - cpu_total1) ))%
+    else
+        cpu_usage_percent="0%"
+    fi
+
+    load=$(awk '{print $1", "$2", "$3}' /proc/loadavg 2>/dev/null)
 
     cpu_cores=$(nproc)
 
@@ -85,6 +100,15 @@ menu_system_info() {
 
     runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
 
+    dns_addresses=$(awk '/^nameserver/{printf "%s ", $2}' /etc/resolv.conf 2>/dev/null)
+    tcp_count=$(ss -t 2>/dev/null | tail -n +2 | wc -l)
+    udp_count=$(ss -u 2>/dev/null | tail -n +2 | wc -l)
+    timezone=$(timedatectl show -p Timezone --value 2>/dev/null)
+    if [ -z "$timezone" ]; then
+        timezone=$(cat /etc/timezone 2>/dev/null)
+    fi
+    [ -z "$timezone" ] && timezone="未知"
+
     echo ""
     echo -e "${white}系统信息详情${re}"
     echo "------------------------"
@@ -97,8 +121,11 @@ menu_system_info() {
     echo -e "${white}CPU架构: ${purple}${cpu_arch}${re}"
     echo -e "${white}CPU型号: ${purple}${cpu_info}${re}"
     echo -e "${white}CPU核心数: ${purple}${cpu_cores}${re}"
+    echo -e "${white}CPU频率: ${purple}${cpu_freq}${re}"
     echo "------------------------"
     echo -e "${white}CPU占用: ${purple}${cpu_usage_percent}${re}"
+    echo -e "${white}系统负载: ${purple}${load}${re}"
+    echo -e "${white}TCP|UDP连接数: ${purple}${tcp_count}|${udp_count}${re}"
     echo -e "${white}物理内存: ${purple}${mem_info}${re}"
     echo -e "${white}虚拟内存: ${purple}${swap_info}${re}"
     echo -e "${white}硬盘占用: ${purple}${disk_info}${re}"
@@ -109,9 +136,10 @@ menu_system_info() {
     echo "------------------------"
     echo -e "${white}公网IPv4地址: ${purple}${ipv4_address}${re}"
     echo -e "${white}公网IPv6地址: ${purple}${ipv6_address}${re}"
+    echo -e "${white}DNS地址: ${purple}${dns_addresses}${re}"
     echo "------------------------"
     echo -e "${white}地理位置: ${purple}${country} $city${re}"
-    echo -e "${white}系统时间: ${purple}${current_time}${re}"
+    echo -e "${white}系统时间: ${purple}${timezone} ${current_time}${re}"
     echo "------------------------"
     echo -e "${white}系统运行时长: ${purple}${runtime}${re}"
     echo

@@ -14,6 +14,7 @@ install() {
         return 1
     fi
 
+    local package failed=0
     for package in "$@"; do
         if command -v "$package" &>/dev/null; then
             echo -e "${green}${package}已经安装了！${re}"
@@ -21,20 +22,31 @@ install() {
         fi
         echo -e "${yellow}正在安装 ${package}...${re}"
         if command -v apt &>/dev/null; then
-            DEBIAN_FRONTEND=noninteractive apt install -y "$package"
+            DEBIAN_FRONTEND=noninteractive apt install -y "$package" || failed=1
         elif command -v dnf &>/dev/null; then
-            dnf install -y "$package"
+            dnf install -y "$package" || failed=1
         elif command -v yum &>/dev/null; then
-            yum install -y "$package"
+            yum install -y "$package" || failed=1
+        elif command -v pacman &>/dev/null; then
+            pacman -S --noconfirm --needed "$package" || failed=1
+        elif command -v zypper &>/dev/null; then
+            zypper install -y "$package" || failed=1
         elif command -v apk &>/dev/null; then
-            apk add "$package"
+            apk add "$package" || failed=1
+        elif command -v opkg &>/dev/null; then
+            opkg update && opkg install "$package" || failed=1
+        elif command -v pkg &>/dev/null; then
+            pkg install -y "$package" || failed=1
         else
-            echo -e"${red}暂不支持你的系统!${re}"
+            echo -e "${red}暂不支持你的系统!${re}"
             return 1
+        fi
+        if [ "$failed" = "1" ]; then
+            echo -e "${red}${package} 安装失败，请检查软件源${re}"
         fi
     done
 
-    return 0
+    return "$failed"
 }
 
 # 卸载依赖包
@@ -45,22 +57,31 @@ remove() {
         return 1
     fi
 
+    local package failed=0
     for package in "$@"; do
         if command -v apt &>/dev/null; then
-            apt remove -y "$package" && apt autoremove -y
+            apt purge -y "$package" || failed=1
         elif command -v dnf &>/dev/null; then
-            dnf remove -y "$package" && dnf autoremove -y
+            dnf remove -y "$package" || failed=1
         elif command -v yum &>/dev/null; then
-            yum remove -y "$package" && yum autoremove -y
+            yum remove -y "$package" || failed=1
+        elif command -v pacman &>/dev/null; then
+            pacman -Rns --noconfirm "$package" || failed=1
+        elif command -v zypper &>/dev/null; then
+            zypper remove -y "$package" || failed=1
         elif command -v apk &>/dev/null; then
-            apk del "$package"
+            apk del "$package" || failed=1
+        elif command -v opkg &>/dev/null; then
+            opkg remove "$package" || failed=1
+        elif command -v pkg &>/dev/null; then
+            pkg delete -y "$package" || failed=1
         else
             echo -e "${red}暂不支持你的系统!${re}"
             return 1
         fi
     done
 
-    return 0
+    return "$failed"
 }
 
 # 安装nodejs

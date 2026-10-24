@@ -21,7 +21,7 @@ menu_docker_manage() {
       echo "------------------------"
       echo -e "${skyblue} 0. 返回主菜单${re}"
       echo "------------------------"
-      read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
       case $sub_choice in
           1)
@@ -69,28 +69,28 @@ menu_docker_manage() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                   case $sub_choice in
                       1)
-                          read -p "请输入创建命令: " dockername
+                          read -e -p "请输入创建命令: " dockername
                           $dockername
                           ;;
 
                       2)
-                          read -p "请输入容器名: " dockername
+                          read -e -p "请输入容器名: " dockername
                           docker start $dockername
                           ;;
                       3)
-                          read -p "请输入容器名: " dockername
+                          read -e -p "请输入容器名: " dockername
                           docker stop $dockername
                           ;;
                       4)
-                          read -p "请输入容器名: " dockername
+                          read -e -p "请输入容器名: " dockername
                           docker rm -f $dockername
                           ;;
                       5)
-                          read -p "请输入容器名: " dockername
+                          read -e -p "请输入容器名: " dockername
                           docker restart $dockername
                           ;;
                       6)
@@ -100,7 +100,7 @@ menu_docker_manage() {
                           docker stop $(docker ps -q)
                           ;;
                       8)
-                          read -p "确定删除所有容器吗？(Y/N): " choice
+                          read -e -p "确定删除所有容器吗？(Y/N): " choice
                           case "$choice" in
                             [Yy])
                               docker rm -f $(docker ps -a -q)
@@ -116,12 +116,12 @@ menu_docker_manage() {
                           docker restart $(docker ps -q)
                           ;;
                       11)
-                          read -p "请输入容器名: " dockername
+                          read -e -p "请输入容器名: " dockername
                           docker exec -it $dockername /bin/bash
                           break_end
                           ;;
                       12)
-                          read -p "请输入容器名: " dockername
+                          read -e -p "请输入容器名: " dockername
                           docker logs $dockername
                           break_end
                           ;;
@@ -172,23 +172,23 @@ menu_docker_manage() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                   case $sub_choice in
                       1)
-                          read -p "请输入镜像名: " dockername
+                          read -e -p "请输入镜像名: " dockername
                           docker pull $dockername
                           ;;
                       2)
-                          read -p "请输入镜像名: " dockername
+                          read -e -p "请输入镜像名: " dockername
                           docker pull $dockername
                           ;;
                       3)
-                          read -p "请输入镜像名: " dockername
+                          read -e -p "请输入镜像名: " dockername
                           docker rmi -f $dockername
                           ;;
                       4)
-                          read -p "确定删除所有镜像吗？(Y/N): " choice
+                          read -e -p "确定删除所有镜像吗？(Y/N): " choice
                           case "$choice" in
                             [Yy])
                               docker rmi -f $(docker images -q)
@@ -248,28 +248,28 @@ menu_docker_manage() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                   case $sub_choice in
                       1)
-                          read -p "设置新网络名: " dockernetwork
+                          read -e -p "设置新网络名: " dockernetwork
                           docker network create $dockernetwork
                           ;;
                       2)
-                          read -p "加入网络名: " dockernetwork
-                          read -p "那些容器加入该网络: " dockername
+                          read -e -p "加入网络名: " dockernetwork
+                          read -e -p "那些容器加入该网络: " dockername
                           docker network connect $dockernetwork $dockername
                           echo ""
                           ;;
                       3)
-                          read -p "退出网络名: " dockernetwork
-                          read -p "那些容器退出该网络: " dockername
+                          read -e -p "退出网络名: " dockernetwork
+                          read -e -p "那些容器退出该网络: " dockername
                           docker network disconnect $dockernetwork $dockername
                           echo ""
                           ;;
 
                       4)
-                          read -p "请输入要删除的网络名: " dockernetwork
+                          read -e -p "请输入要删除的网络名: " dockernetwork
                           docker network rm $dockernetwork
                           ;;
                       0)
@@ -296,16 +296,16 @@ menu_docker_manage() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                   case $sub_choice in
                       1)
-                          read -p "设置新卷名: " dockerjuan
+                          read -e -p "设置新卷名: " dockerjuan
                           docker volume create $dockerjuan
 
                           ;;
                       2)
-                          read -p "输入删除卷名: " dockerjuan
+                          read -e -p "输入删除卷名: " dockerjuan
                           docker volume rm $dockerjuan
 
                           ;;
@@ -321,7 +321,7 @@ menu_docker_manage() {
               ;;
           7)
               clear
-              read -p "确定清理无用的镜像容器网络吗？(Y/N): " choice
+              read -e -p "确定清理无用的镜像容器网络吗？(Y/N): " choice
               case "$choice" in
                 [Yy])
                   docker system prune -af --volumes
@@ -335,7 +335,7 @@ menu_docker_manage() {
               ;;
           8)
               clear
-              read -p "确定卸载docker环境吗？(Y/N): " choice
+              read -e -p "确定卸载docker环境吗？(Y/N): " choice
               case "$choice" in
                 [Yy])
                   docker rm $(docker ps -a -q) && docker rmi $(docker images -q) && docker network prune

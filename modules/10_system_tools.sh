@@ -30,12 +30,12 @@ menu_system_tools() {
       echo "------------------------"
       echo -e "${skyblue} 0. 返回主菜单${re}"
       echo "------------------------"
-      read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
       case $sub_choice in
           1)
               clear
-              read -p $'\033[1;91m请输入你需要设置的快捷按键: \033[0m' kuaijiejian              
+              read -e -p $'\033[1;91m请输入你需要设置的快捷按键: \033[0m' kuaijiejian              
                 [ -z "$kuaijiejian" ] && echo -e "${red}你似乎什么也没输入${re}" && main_menu || kuaijiejian_value="$kuaijiejian"
     
                 # 检查输入是否为单个字母
@@ -68,19 +68,19 @@ menu_system_tools() {
 
           2)
               clear
-               read -p $'\033[1;35m请输入新的ROOT密码: \033[0m' passwd
+               read -e -p $'\033[1;35m请输入新的ROOT密码: \033[0m' passwd
                echo "root:$passwd" | chpasswd && echo -e "\033[1;32mRoot密码修改成功. 正在重启服务器...\033[0m" && sleep 1 && reboot || echo -e "\033[1;91mRoot密码修改失败\033[0m"
               ;;
           3)
               clear
-              read -p $'\033[1;35m请设置你的root密码: \033[0m' passwd
+              read -e -p $'\033[1;35m请设置你的root密码: \033[0m' passwd
               echo "root:$passwd" | chpasswd && echo "Root密码设置成功" || echo "Root密码修改失败"
               sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config;
               sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config;
               sed -i 's|^Include /etc/ssh/sshd_config.d/\*.conf|#&|' /etc/ssh/sshd_config;
               service sshd restart
               echo -e "${green}ROOT登录设置完毕，重启服务器生效${re}"
-              read -p $'\033[1;35m需要立即重启服务器吗？(y/n): \033[0m' choice
+              read -e -p $'\033[1;35m需要立即重启服务器吗？(y/n): \033[0m' choice
           case "$choice" in
             [Yy])
               reboot
@@ -124,7 +124,7 @@ menu_system_tools() {
               echo "------------------------"
 
               # 提示用户输入新的 SSH 端口号
-              read -p $'\033[1;35m请输入新的 SSH 端口号: \033[0m' new_port
+              read -e -p $'\033[1;35m请输入新的 SSH 端口号: \033[0m' new_port
 
               # 备份 SSH 配置文件
               cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
@@ -152,7 +152,7 @@ menu_system_tools() {
             echo "------------------------"
             echo ""
             # 询问用户是否要优化DNS设置
-            read -p $'\033[1;35m是否要设置为Cloudflare和Google的DNS地址？(y/n): \033[0m' choice
+            read -e -p $'\033[1;35m是否要设置为Cloudflare和Google的DNS地址？(y/n): \033[0m' choice
 
             if [ "$choice" == "y" ]; then
                 # 定义DNS地址
@@ -194,7 +194,7 @@ menu_system_tools() {
             clear
 
             restart_system() {
-                read -p $'\033[1;35m是否立即重启系统继续完成安装？(y/n): \033[0m' restart_choice
+                read -e -p $'\033[1;35m是否立即重启系统继续完成安装？(y/n): \033[0m' restart_choice
                 echo -e "${green}重启系统几分钟后即可连接SSH${re}"
                 if [[ $restart_choice =~ ^[Yy]$ ]]; then
                     reboot
@@ -207,7 +207,7 @@ menu_system_tools() {
 
             echo -e "${purple}重装系统将无法恢复数据，请提前做好备份${re}"
             echo ""
-            read -p $'\033[1;35m确定要重装吗？(y/n): \033[0m' confirm
+            read -e -p $'\033[1;35m确定要重装吗？(y/n): \033[0m' confirm
 
             if [[ $confirm =~ ^[Yy]$ ]]; then
                     sleep 1
@@ -232,7 +232,7 @@ menu_system_tools() {
                     echo "-----------------------------------------------"
                     echo -e "${red}0.取消安装${re}"
                     echo "---------------------"
-                    read -p $'\033[1;35m请输入你的选择: \033[0m' sub_choice
+                    read -e -p $'\033[1;35m请输入你的选择: \033[0m' sub_choice
                    
                     case $sub_choice in
                         1) 
@@ -368,7 +368,7 @@ menu_system_tools() {
             install sudo
 
             # 提示用户输入新用户名
-            read -p "请输入新用户名: " new_username
+            read -e -p "请输入新用户名: " new_username
 
             # 创建新用户并设置密码
             sudo useradd -m -s /bin/bash "$new_username"
@@ -401,7 +401,7 @@ menu_system_tools() {
             echo "------------------------"
             echo "1. IPv4 优先          2. IPv6 优先      3. 禁用 IPv6"
             echo "------------------------"
-            read -p "选择优先的网络: " choice
+            read -e -p "选择优先的网络: " choice
 
             case $choice in
                 1)
@@ -414,7 +414,7 @@ menu_system_tools() {
                     v6_disabled=$(sysctl -n net.ipv6.conf.all.disable_ipv6 2>/dev/null)
                     if [ "$v6_disabled" -eq 1 ]; then
                         echo -e "\n${yellow}IPv6 已禁用，是否需要开启？[Y/N]${re}"
-                        read -p "是否需要开启？[Y/N]" choice
+                        read -e -p "是否需要开启？[Y/N]" choice
                         if [[ "$choice" =~ [Yy] ]]; then
                             sysctl -w net.ipv6.conf.all.disable_ipv6=0 >/dev/null 2>&1
                             sysctl -w net.ipv6.conf.default.disable_ipv6=0 >/dev/null 2>&1
@@ -498,12 +498,12 @@ menu_system_tools() {
 
             echo "当前虚拟内存: $swap_info"
 
-            read -p "是否调整大小?(Y/N): " choice
+            read -e -p "是否调整大小?(Y/N): " choice
 
             case "$choice" in
               [Yy])
                 # 输入新的虚拟内存大小
-                read -p "请输入虚拟内存大小MB: " new_swap
+                read -e -p "请输入虚拟内存大小MB: " new_swap
 
                 # 获取当前系统中所有的 swap 分区
                 swap_partitions=$(grep -E '^/dev/' /proc/swaps | awk '{print $1}')
@@ -618,12 +618,12 @@ menu_system_tools() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                   case $sub_choice in
                       1)
                        # 提示用户输入新用户名
-                       read -p "请输入新用户名: " new_username
+                       read -e -p "请输入新用户名: " new_username
 
                        # 创建新用户并设置密码
                        sudo useradd -m -s /bin/bash "$new_username"
@@ -634,7 +634,7 @@ menu_system_tools() {
 
                       2)
                        # 提示用户输入新用户名
-                       read -p "请输入新用户名: " new_username
+                       read -e -p "请输入新用户名: " new_username
 
                        # 创建新用户并设置密码
                        sudo useradd -m -s /bin/bash "$new_username"
@@ -647,18 +647,18 @@ menu_system_tools() {
 
                           ;;
                       3)
-                       read -p "请输入用户名: " username
+                       read -e -p "请输入用户名: " username
                        # 赋予新用户sudo权限
                        echo "$username ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
                           ;;
                       4)
-                       read -p "请输入用户名: " username
+                       read -e -p "请输入用户名: " username
                        # 从sudoers文件中移除用户的sudo权限
                        sudo sed -i "/^$username\sALL=(ALL:ALL)\sALL/d" /etc/sudoers
 
                           ;;
                       5)
-                       read -p "请输入要删除的用户名: " username
+                       read -e -p "请输入要删除的用户名: " username
                        # 删除用户及其主目录
                        sudo userdel -r "$username"
                           ;;
@@ -678,7 +678,7 @@ menu_system_tools() {
             clear
             echo -e "${green}重装系统将无法恢复数据，请提前做好备份${re}"
             echo ""
-            read -p $'\033[1;35m确定要重装吗？(y/n): \033[0m' confirm
+            read -e -p $'\033[1;35m确定要重装吗？(y/n): \033[0m' confirm
 
                 if [[ $confirm =~ ^[Yy]$ ]]; then
                     sleep 1
@@ -704,7 +704,7 @@ menu_system_tools() {
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                   case $sub_choice in
                       1)
@@ -739,7 +739,7 @@ menu_system_tools() {
           echo "仅支持Debian/Ubuntu 仅支持x86_64架构"
           echo "VPS是512M内存的，请提前添加1G虚拟内存，防止因内存不足失联！"
           echo "------------------------------------------------"
-          read -p "确定继续吗？(Y/N): " choice
+          read -e -p "确定继续吗？(Y/N): " choice
 
           case "$choice" in
             [Yy])
@@ -818,18 +818,18 @@ EOF
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                   case $sub_choice in
                       1)
-                      read -p "请输入开放的端口号: " o_port
+                      read -e -p "请输入开放的端口号: " o_port
                       sed -i "/COMMIT/i -A INPUT -p tcp --dport $o_port -j ACCEPT" /etc/iptables/rules.v4
                       sed -i "/COMMIT/i -A INPUT -p udp --dport $o_port -j ACCEPT" /etc/iptables/rules.v4
                       iptables-restore < /etc/iptables/rules.v4
 
                           ;;
                       2)
-                      read -p "请输入关闭的端口号: " c_port
+                      read -e -p "请输入关闭的端口号: " c_port
                       sed -i "/--dport $c_port/d" /etc/iptables/rules.v4
                       iptables-restore < /etc/iptables/rules.v4
                         ;;
@@ -872,20 +872,20 @@ EOF
                           ;;
 
                       5)
-                      read -p "请输入放行的IP: " o_ip
+                      read -e -p "请输入放行的IP: " o_ip
                       sed -i "/COMMIT/i -A INPUT -s $o_ip -j ACCEPT" /etc/iptables/rules.v4
                       iptables-restore < /etc/iptables/rules.v4
 
                           ;;
 
                       6)
-                      read -p "请输入封锁的IP: " c_ip
+                      read -e -p "请输入封锁的IP: " c_ip
                       sed -i "/COMMIT/i -A INPUT -s $c_ip -j DROP" /etc/iptables/rules.v4
                       iptables-restore < /etc/iptables/rules.v4
                           ;;
 
                       7)
-                     read -p "请输入清除的IP: " d_ip
+                     read -e -p "请输入清除的IP: " d_ip
                      sed -i "/-A INPUT -s $d_ip/d" /etc/iptables/rules.v4
                      iptables-restore < /etc/iptables/rules.v4
                           ;;
@@ -914,7 +914,7 @@ EOF
           clear
           echo "将为你安装防火墙，该防火墙仅支持Debian/Ubuntu"
           echo "------------------------------------------------"
-          read -p "确定继续吗？(Y/N): " choice
+          read -e -p "确定继续吗？(Y/N): " choice
 
           case "$choice" in
             [Yy])
@@ -973,11 +973,11 @@ EOF
             source /etc/os-release
             echo -e "${yellow}当前系统: ${red}${PRETTY_NAME}${re}"
             current_hostname=$(hostname)
-            read -p $'\033[1;35m确定要更改主机名？ (y/n): \033[0m' choice
+            read -e -p $'\033[1;35m确定要更改主机名？ (y/n): \033[0m' choice
 
             if [[ "$choice" =~ ^[Yy]$ ]]; then
 
-                read -p $'\033[1;35m请输入新的主机名: \033[0m' new_hostname
+                read -e -p $'\033[1;35m请输入新的主机名: \033[0m' new_hostname
 
                 case $ID in
                     "alpine")
@@ -1141,7 +1141,7 @@ EOF
               echo "------------------------"
               echo "0. 返回上一级"
               echo "------------------------"
-              read -p "请选择操作: " choice
+              read -e -p "请选择操作: " choice
 
               case $choice in
                   1)
@@ -1240,22 +1240,22 @@ EOF
                   echo "------------------------"
                   echo "0. 返回上一级选单"
                   echo "------------------------"
-                  read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                  read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                   case $sub_choice in
                       1)
-                          read -p "请输入新任务的执行命令: " newquest
+                          read -e -p "请输入新任务的执行命令: " newquest
                           echo "------------------------"
                           echo "1. 每周任务                 2. 每天任务"
-                          read -p $'\033[1;91m请输入你的选择: \033[0m' dingshi
+                          read -e -p $'\033[1;91m请输入你的选择: \033[0m' dingshi
 
                           case $dingshi in
                               1)
-                                  read -p "选择周几执行任务？ (0-6，0代表星期日): " weekday
+                                  read -e -p "选择周几执行任务？ (0-6，0代表星期日): " weekday
                                   (crontab -l ; echo "0 0 * * $weekday $newquest") | crontab - > /dev/null 2>&1
                                   ;;
                               2)
-                                  read -p "选择每天几点执行任务？（小时，0-23）: " hour
+                                  read -e -p "选择每天几点执行任务？（小时，0-23）: " hour
                                   (crontab -l ; echo "0 $hour * * * $newquest") | crontab - > /dev/null 2>&1
                                   ;;
                               *)
@@ -1264,7 +1264,7 @@ EOF
                           esac
                           ;;
                       2)
-                          read -p "请输入需要删除任务的关键字: " kquest
+                          read -e -p "请输入需要删除任务的关键字: " kquest
                           crontab -l | grep -v "$kquest" | crontab -
                           ;;
                       0)
@@ -1290,7 +1290,7 @@ EOF
                 echo "------------------------"
                 echo "0. 返回上一级选单"
                 echo "------------------------"
-                read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice   
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice   
 
                 case $sub_choice in
                     1)
@@ -1300,7 +1300,7 @@ EOF
                             # nmap 已安装
                             echo -e "${green}nmap已存在，无需安装${re}"
                             while true; do
-                                read -p "请输入你想要扫描的ipv4: " ip4
+                                read -e -p "请输入你想要扫描的ipv4: " ip4
                                 if [[ $ip4 =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]]; then
                                     break
                                 else
@@ -1319,7 +1319,7 @@ EOF
                             sleep 1
                             clear
                             while true; do
-                                read -p "请输入你想要扫描的ipv4: " ip4
+                                read -e -p "请输入你想要扫描的ipv4: " ip4
                                 if [[ $ip4 =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]]; then
                                     break
                                 else
@@ -1343,7 +1343,7 @@ EOF
                             # nmap 已安装
                             echo -e "${green}nmap已存在，无需安装${re}"
                             while true; do
-                                read -p "请输入你想要扫描的ipv6: " ip6
+                                read -e -p "请输入你想要扫描的ipv6: " ip6
                                 if [[ $ip6 =~ ^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::([0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4}$|^([0-9a-fA-F]{1,4}:){1,6}:$|^([0-9a-fA-F]{1,4}:){1,6}::([0-9a-fA-F]{1,4}:){0,4}[0-9a-fA-F]{1,4}$ ]]; then
                                     break
                                 else
@@ -1361,7 +1361,7 @@ EOF
                             install "nmap"
                             sleep 1
                             while true; do
-                                read -p "请输入你想要扫描的ipv6: " ip6
+                                read -e -p "请输入你想要扫描的ipv6: " ip6
                                 if [[ $ip6 =~ ^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::([0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4}$|^([0-9a-fA-F]{1,4}:){1,6}:$|^([0-9a-fA-F]{1,4}:){1,6}::([0-9a-fA-F]{1,4}:){0,4}[0-9a-fA-F]{1,4}$ ]]; then
                                     break
                                 else
@@ -1407,7 +1407,7 @@ EOF
                 echo "------------------------"
                 echo "0. 返回上一级选单"
                 echo "------------------------"
-                read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice   
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice   
 
                 case $sub_choice in
                     1)
@@ -1498,7 +1498,7 @@ EOF
                 echo "------------------------"
                 echo " 0. 返回上一级选单"
                 echo "------------------------"
-                read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                 case $sub_choice in
                     1) timedatectl set-timezone Asia/Shanghai ;;
@@ -1538,7 +1538,7 @@ EOF
                 echo -e "${yellow}初始化环境...${re}"
                 install sshpass
                 clear
-                read -p $'\033[1;35m请输入要连接的ipv4/ipv6地址: \033[0m' common_ip
+                read -e -p $'\033[1;35m请输入要连接的ipv4/ipv6地址: \033[0m' common_ip
                 
                 echo -e "${green}即将进入nano编辑器，请添加nat小鸡配置信息${re}"
                 sleep 1
@@ -1595,12 +1595,12 @@ EOF
             echo "------------------------"
 
             # 判断是否要留言
-            read -p "是否要留言？(y/n): " leave_message
+            read -e -p "是否要留言？(y/n): " leave_message
 
             if [ "$leave_message" == "y" ] || [ "$leave_message" == "Y" ]; then
                 # 输入新的留言内容
-                read -p "输入你的昵称: " nicheng
-                read -p "输入你的聊天内容: " neirong
+                read -e -p "输入你的昵称: " nicheng
+                read -e -p "输入你的聊天内容: " neirong
 
                 # 添加新留言到远程文件
                 sshpass -p "${password}" ssh -o StrictHostKeyChecking=no "${remote_user}@${remote_ip}" "echo -e '${nicheng}: ${neirong}' >> '${remote_file}'"

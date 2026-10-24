@@ -38,7 +38,7 @@ menu_component_manage() {
       echo "------------------------"
       echo -e "${skyblue} 0. 返回主菜单${re}"
       echo "------------------------"
-      read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
       case $sub_choice in
           1)
@@ -232,12 +232,12 @@ menu_component_manage() {
 
           41)
               clear
-              read -p "请输入安装的工具名（wget curl sudo htop）: " installname
+              read -e -p "请输入安装的工具名（wget curl sudo htop）: " installname
               install $installname
               ;;
           42)
               clear
-              read -p "请输入卸载的工具名（htop ufw tmux cmatrix）: " removename
+              read -e -p "请输入卸载的工具名（htop ufw tmux cmatrix）: " removename
               remove $removename
               ;;
 

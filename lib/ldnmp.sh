@@ -154,7 +154,7 @@ nginx_status() {
 add_yuming() {
       ip_address
       echo -e "先将域名解析到本机IP: \033[33m$ipv4_address  $ipv6_address\033[0m"
-      read -p "请输入你解析的域名: " yuming
+      read -e -p "请输入你解析的域名: " yuming
 }
 
 
@@ -201,7 +201,7 @@ if docker inspect "$docker_name" &>/dev/null; then
     echo "------------------------"
     echo "0. 返回上一级选单"
     echo "------------------------"
-    read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+    read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
     case $sub_choice in
         1)
@@ -243,7 +243,7 @@ else
     echo ""
 
     # 提示用户确认安装
-    read -p "确定安装吗？(Y/N): " choice
+    read -e -p "确定安装吗？(Y/N): " choice
     case "$choice" in
         [Yy])
             clear

@@ -30,6 +30,7 @@ show_main_menu() {
     echo -e "${green}10. 系统工具 ▶                14. 甲骨文云合集 ▶${re}"
     echo -e "${green}11. 我的工作区 ▶              15. 常用环境管理 ▶${re}"
     echo -e "${purple}12. 节点搭建合集 ▶            16. 开设NAT小鸡 ▶${re}"
+    echo -e "${green}17. 基础工具 ▶${re}"
     echo "-------------------------------------------------------------------"
     echo -e "${green}00. 脚本更新${red}                  88. 退出脚本${re}"
     echo -e "${yellow}-------------------------------------------------------------------${re}"
@@ -38,7 +39,7 @@ show_main_menu() {
 main_loop() {
     while true; do
         show_main_menu
-        read -p $'\033[1;91m请输入你的选择: \033[0m' choice || exit 0
+        read -e -p $'\033[1;91m请输入你的选择: \033[0m' choice || exit 0
 
         case "$choice" in
             1)  menu_system_info ;;
@@ -57,6 +58,7 @@ main_loop() {
             14) menu_oracle_cloud ;;
             15) menu_env_manage ;;
             16) menu_nat_vm ;;
+            17) menu_basic_tools ;;
             00) menu_update_self ;;
             88) clear; exit 0 ;;
             *)  echo -e "${purple}无效的输入!${re}" ;;

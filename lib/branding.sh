@@ -3,14 +3,15 @@
 
 PROJECT_NAME="vps-toolbox"
 PROJECT_TITLE="VPS 工具箱"
-PROJECT_VERSION="0.1.0"
+PROJECT_VERSION="0.2.0"
 PROJECT_AUTHOR="testdogbot"
 
 # 你的 GitHub 仓库（留空表示尚未发布，快捷键与更新功能会退化为本地模式）
 PROJECT_REPO_URL="https://github.com/testdogbot/vps-toolbox-ng"
 PROJECT_BRANCH="main"
 
-# 安装/更新/快捷键使用的入口脚本地址；留空则使用本地路径
+# 在线入口脚本地址（可选）。本项目为多文件结构，快捷命令直接执行本地入口，
+# 该项仅用于自定义分发（如安装提示、外部文档引用）；留空不影响使用
 PROJECT_RAW_URL="https://raw.githubusercontent.com/testdogbot/vps-toolbox-ng/main/vps-toolbox.sh"
 
 # 安装目录（install.sh 与更新逻辑使用）

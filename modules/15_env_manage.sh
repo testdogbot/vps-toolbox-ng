@@ -18,7 +18,7 @@ menu_env_manage() {
         echo "------------------------"
         echo -e "${skyblue}0. 返回主菜单${re}"
         echo "------------------------"
-        read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+        read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
         case $sub_choice in
             1)
@@ -49,7 +49,7 @@ menu_env_manage() {
                         main_menu
                     else
                         echo -e "${yellow}检测到你的Python3版本:${red}${VERSION}${yellow},最新版本:${green}${PY_VERSION}${re}"
-                        read -p $'\033[1;91m是否确认升级最新版Python3？[y/n]: \033[0m' confirm
+                        read -e -p $'\033[1;91m是否确认升级最新版Python3？[y/n]: \033[0m' confirm
                         if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
                             if [[ $OS == "CentOS" ]]; then
                                 yum remove python3 -y
@@ -81,7 +81,7 @@ menu_env_manage() {
                     fi   
                 else
                     echo -e "${red}检测到没有安装Python3。${re}"
-                    read -p $'\033[1;91m是否确认安装最新版Python3？[y/n]: \033[0m' confirm
+                    read -e -p $'\033[1;91m是否确认安装最新版Python3？[y/n]: \033[0m' confirm
                     if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
                         echo -e "${green}开始安装最新版Python3...${re}"
                     else
@@ -156,7 +156,7 @@ menu_env_manage() {
                     else
                         # 如果不是最新版本
                         echo -e "${yellow}你的nodejs版本是${re}${red}${current_version}${re}，${yellow}最新版本是${purple}${latest_version}${re}"                                 
-                        read -p $'\033[1;91m是否卸载旧版nodejs并安装最新版？[y/n]: \033[0m' confirm
+                        read -e -p $'\033[1;91m是否卸载旧版nodejs并安装最新版？[y/n]: \033[0m' confirm
                         if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
                                                        
                             remove nodejs
@@ -214,7 +214,7 @@ menu_env_manage() {
                         main_menu
                     elif [ "$(printf "$installed_version\n$latest_version" | sort -V | head -n 1)" != "$installed_version" ]; then
                         echo -e "${yellow}发现新版本：$latest_version。${re}"
-                        read -p $'\033[1;91m需要卸载当前版本 $installed_version 并安装新版本 $latest_version 吗 [y/n]: \033[0m' confirm
+                        read -e -p $'\033[1;91m需要卸载当前版本 $installed_version 并安装新版本 $latest_version 吗 [y/n]: \033[0m' confirm
                         
                         if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
                             echo "卸载旧版Go：$installed_version"
@@ -273,7 +273,7 @@ menu_env_manage() {
                         main_menu
                     else
                         echo -e "${red}"
-                        read -p "是否卸载旧版java并安装最新版？[y/n]: " confirm
+                        read -e -p "是否卸载旧版java并安装最新版？[y/n]: " confirm
                         if [[ $confirm =~ ^[Yy]$ ]]; then
                             # 卸载旧版java
                             remove java
@@ -298,7 +298,7 @@ menu_env_manage() {
 
                     echo -e "${yellow}当前已安装python${red}${current_version}"
 
-                    read -p $'\033[1;91m确定卸载python？[y/n]: \033[0m' confirm
+                    read -e -p $'\033[1;91m确定卸载python？[y/n]: \033[0m' confirm
                     if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
                     
                         # 卸载python3
@@ -334,7 +334,7 @@ menu_env_manage() {
 
                     echo -e "${yellow}当前已安装nodejs${red}$current_version${re}"
                             
-                    read -p $'\033[1;91m确定卸载nodejs？[y/n]: \033[0m' confirm
+                    read -e -p $'\033[1;91m确定卸载nodejs？[y/n]: \033[0m' confirm
                     if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
                         
                         # 卸载
@@ -366,7 +366,7 @@ menu_env_manage() {
 
                     echo -e "${yellow}当前已安装Go：${red}$installed_version${re}"
                             
-                    read -p $'\033[1;91m确定卸载Go？[y/n]: \033[0m' confirm
+                    read -e -p $'\033[1;91m确定卸载Go？[y/n]: \033[0m' confirm
                     if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
 
                         rm -rf /usr/local/go
@@ -398,7 +398,7 @@ menu_env_manage() {
                     installed_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
                     echo -e "${yellow}你的Java版本：${red}${installed_version}${re}"
 
-                    read -p $'\033[1;91m确定卸载Java？[y/n]: \033[0m' confirm
+                    read -e -p $'\033[1;91m确定卸载Java？[y/n]: \033[0m' confirm
                     if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
 
                         remove_java() {
@@ -430,7 +430,7 @@ menu_env_manage() {
                         rm -rf /usr/local/java
                         rm -rf /opt/java
                         echo -e "${red}"
-                        read -p $'\033[1;91m重启服务器配置才可生效，需要立即重启吗 [y/n]: \033[0m' confirm
+                        read -e -p $'\033[1;91m重启服务器配置才可生效，需要立即重启吗 [y/n]: \033[0m' confirm
 
                         if [ "$confirm" == "y" ] || [ "$confirm" == "Y" ]; then
                             sleep 1

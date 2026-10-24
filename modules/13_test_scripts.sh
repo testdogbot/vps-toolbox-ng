@@ -30,7 +30,7 @@ menu_test_scripts() {
       echo "---------------------------"
       echo -e "${skyblue} 0. 返回主菜单${re}"
       echo "---------------------------"
-      read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
       case $sub_choice in
           1)
               clear

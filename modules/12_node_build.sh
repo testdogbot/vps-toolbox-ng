@@ -23,7 +23,7 @@ menu_node_build() {
       echo "---------------------------------------------------------" 
       echo -e "${skyblue} 0. 返回主菜单${re}"
       echo "---------------"
-      read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice   
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice   
 
       case $sub_choice in
 
@@ -68,29 +68,29 @@ menu_node_build() {
             install wget bash
             clear
 
-            read -p $'\033[1;33m是否需要安装哪吒探针？(y/n) 【直接回车不安装】: \033[0m' nezha
+            read -e -p $'\033[1;33m是否需要安装哪吒探针？(y/n) 【直接回车不安装】: \033[0m' nezha
             
             if [ "$nezha" == "y" ] || [ "$nezha" == "Y" ]; then
-                read -p $'\033[1;35m请输入哪吒客域名(v1格式: nezha.xxx.com:8008  v0格式: nezha.xxx.com): \033[0m' nzserver
-                read -p $'\033[1;35m请输入哪吒agent端口(哪吒v1请直接回车留空): \033[0m' nzport
-                read -p $'\033[1;35m请输入哪吒agnt密钥: \033[0m' nzkey
+                read -e -p $'\033[1;35m请输入哪吒客域名(v1格式: nezha.xxx.com:8008  v0格式: nezha.xxx.com): \033[0m' nzserver
+                read -e -p $'\033[1;35m请输入哪吒agent端口(哪吒v1请直接回车留空): \033[0m' nzport
+                read -e -p $'\033[1;35m请输入哪吒agnt密钥: \033[0m' nzkey
             fi
-            read -p $'\033[1;33m是否需要使用固定隧道？(直接回车将使用临时隧道 y/n) : \033[0m' isargo
+            read -e -p $'\033[1;33m是否需要使用固定隧道？(直接回车将使用临时隧道 y/n) : \033[0m' isargo
             if [ "$isargo" == "y" ] || [ "$isargo" == "Y" ]; then
-                read -p $'\033[1;35m请输入固定隧道的域名(格式: xxx.xxx.com): \033[0m' argodomain
-                read -p $'\033[1;35m请输入固定隧道密钥(json或token): \033[0m' argokey
+                read -e -p $'\033[1;35m请输入固定隧道的域名(格式: xxx.xxx.com): \033[0m' argodomain
+                read -e -p $'\033[1;35m请输入固定隧道密钥(json或token): \033[0m' argokey
             fi
 
-            read -p $'\033[1;33m是否需要直连协议(hy2,tuic,reality,anytls,socks5,anyReality等,直接回车不启用)？(y/n) : \033[0m' isdirect
+            read -e -p $'\033[1;33m是否需要直连协议(hy2,tuic,reality,anytls,socks5,anyReality等,直接回车不启用)？(y/n) : \033[0m' isdirect
             if [ "$isdirect" == "y" ] || [ "$isdirect" == "Y" ]; then
-                read -p $'\033[1;35m请输入Hy2节点端口(不需要可直接回车留空): \033[0m' hy2pt
-                read -p $'\033[1;35m请输入Tuic节点端口(不需要可直接回车留空): \033[0m' tuicpt
-                read -p $'\033[1;35m请输入Reality节点端口(不需要可直接回车留空): \033[0m' realitypt
-                read -p $'\033[1;35m请输入Anytls节点端口(不需要可直接回车留空): \033[0m' anytlspt
-                read -p $'\033[1;35m请输入Socks5节点端口(不需要可直接回车留空): \033[0m' socks5pt
-                read -p $'\033[1;35m请输入AnyReality节点端口(不需要可直接回车留空): \033[0m' anyrealitypt
+                read -e -p $'\033[1;35m请输入Hy2节点端口(不需要可直接回车留空): \033[0m' hy2pt
+                read -e -p $'\033[1;35m请输入Tuic节点端口(不需要可直接回车留空): \033[0m' tuicpt
+                read -e -p $'\033[1;35m请输入Reality节点端口(不需要可直接回车留空): \033[0m' realitypt
+                read -e -p $'\033[1;35m请输入Anytls节点端口(不需要可直接回车留空): \033[0m' anytlspt
+                read -e -p $'\033[1;35m请输入Socks5节点端口(不需要可直接回车留空): \033[0m' socks5pt
+                read -e -p $'\033[1;35m请输入AnyReality节点端口(不需要可直接回车留空): \033[0m' anyrealitypt
             fi
-            read -p $'\033[1;35m请输入你的UUID(留空将随机生成,哪吒v1将依赖此uuid): \033[0m' uuid
+            read -e -p $'\033[1;35m请输入你的UUID(留空将随机生成,哪吒v1将依赖此uuid): \033[0m' uuid
             [[ -z $uuid ]] && uuid=$(cat /proc/sys/kernel/random/uuid)
             UUID=$uuid NEZHA_SERVER=$nzserver NEZHA_PORT=$nzport NEZHA_KEY=$nzkey ARGO_DOMAIN=$argodomain ARGO_AUTH=$argokey HY2_PORT=$hy2pt TUIC_PORT=$tuicpt REALITY_PORT=$realitypt ANYTLS_PORT=$anytlspt S5_PORT=$socks5pt ANYREALITY_PORT=$anyrealitypt bash <(curl -Ls https://main.ssss.nyc.mn/sb.sh)
             sleep 1
@@ -106,16 +106,16 @@ menu_node_build() {
           echo "--------------"
           echo -e "${skyblue}0. 返回上一级菜单${re}"
           echo "--------------"
-          read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+          read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
             case $sub_choice in
                 1)
                   clear
-                    read -p $'\033[1;35m请输入Hysteria2节点端口(nat小鸡请输入可用端口范围内的端口),回车跳过则使用随机端口：\033[0m' port
+                    read -e -p $'\033[1;35m请输入Hysteria2节点端口(nat小鸡请输入可用端口范围内的端口),回车跳过则使用随机端口：\033[0m' port
                     [[ -z $port ]]
                     until [[ -z $(netstat -tuln | grep -w udp | awk '{print $4}' | sed 's/.*://g' | grep -w "$port") ]]; do
                         if [[ -n $(netstat -tuln | grep -w udp | awk '{print $4}' | sed 's/.*://g' | grep -w "$port") ]]; then
                             echo -e "${red}${port}端口已经被其他程序占用，请更换端口重试${re}"
-                            read -p $'\033[1;35m设置Hysteria2端口[1-65535]（回车将使用随机端口）：\033[0m' port
+                            read -e -p $'\033[1;35m设置Hysteria2端口[1-65535]（回车将使用随机端口）：\033[0m' port
                             [[ -z $HY2_PORT ]] && port=8880
                         fi
                     done
@@ -146,12 +146,12 @@ menu_node_build() {
                     ;;
                 3)
                     clear
-                        read -p $'\033[1;35m设置Hysteria2端口[1-65535]（回车跳过将使用随机端口）：\033[0m' new_port
+                        read -e -p $'\033[1;35m设置Hysteria2端口[1-65535]（回车跳过将使用随机端口）：\033[0m' new_port
                         [[ -z $new_port ]] && new_port=$(shuf -i 2000-65000 -n 1)
                         until [[ -z $(netstat -tuln | grep -w udp | awk '{print $4}' | sed 's/.*://g' | grep -w "$new_port") ]]; do
                             if [[ -n $(netstat -tuln | grep -w udp | awk '{print $4}' | sed 's/.*://g' | grep -w "$new_port") ]]; then
                                 echo -e "${red}${new_port}端口已经被其他程序占用，请更换端口重试${re}"
-                                read -p $'\033[1;35m设置Hysteria2端口[1-65535]（回车跳过将使用随机端口）：\033[0m' new_port
+                                read -e -p $'\033[1;35m设置Hysteria2端口[1-65535]（回车跳过将使用随机端口）：\033[0m' new_port
                                 [[ -z $new_port ]] && new_port=$(shuf -i 2000-65000 -n 1)
                             fi
                         done
@@ -216,7 +216,7 @@ menu_node_build() {
         clear
             install iproute2
             clear
-            read -p $'\033[1;35m请输入MTProto代理端口(直接回车则使用随机端口): \033[0m' port
+            read -e -p $'\033[1;35m请输入MTProto代理端口(直接回车则使用随机端口): \033[0m' port
             while true; do
                 if [[ -z $port ]]; then
                     port=$(shuf -i 2000-65000 -n 1)
@@ -251,18 +251,18 @@ menu_node_build() {
           echo "--------------"
           echo -e "${skyblue}0. 返回上一级菜单${re}"
           echo "--------------"
-          read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+          read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
             case $sub_choice in
                 1)
                   clear
                     install lsof
                     clear
-                    read -p $'\033[1;35m请输入reality节点端口(nat小鸡请输入可用端口范围内的端口),回车跳过则使用随机端口：\033[0m' port
+                    read -e -p $'\033[1;35m请输入reality节点端口(nat小鸡请输入可用端口范围内的端口),回车跳过则使用随机端口：\033[0m' port
                     [[ -z $port ]]
                     until [[ -z $(lsof -i :$port 2>/dev/null) ]]; do
                         if [[ -n $(lsof -i :$port 2>/dev/null) ]]; then
                             echo -e "${red}${port}端口已经被其他程序占用，请更换端口重试${re}"
-                            read -p $'\033[1;35m设置 reality 端口[1-65535]（回车跳过将使用随机端口）：\033[0m' port
+                            read -e -p $'\033[1;35m设置 reality 端口[1-65535]（回车跳过将使用随机端口）：\033[0m' port
                             [[ -z $port ]] && port=$(shuf -i 2000-65000 -n 1)
                         fi
                     done
@@ -302,12 +302,12 @@ menu_node_build() {
                     ;;
                 3)
                     clear
-                        read -p $'\033[1;35m设置 reality 端口[1-65535]（回车跳过将使用随机端口）：\033[0m' new_port
+                        read -e -p $'\033[1;35m设置 reality 端口[1-65535]（回车跳过将使用随机端口）：\033[0m' new_port
                         [[ -z $new_port ]] && new_port=$(shuf -i 2000-65000 -n 1)
                         until [[ -z $(lsof -i :$new_port 2>/dev/null) ]]; do
                             if [[ -n $(lsof -i :$new_port 2>/dev/null) ]]; then
                                 echo -e "${red}${new_port}端口已经被其他程序占用，请更换端口重试${re}"
-                                read -p $'\033[1;35m设置reality端口[1-65535]（回车跳过将使用随机端口）：\033[0m' new_port
+                                read -e -p $'\033[1;35m设置reality端口[1-65535]（回车跳过将使用随机端口）：\033[0m' new_port
                                 [[ -z $new_port ]] && new_port=$(shuf -i 2000-65000 -n 1)
                             fi
                         done
@@ -347,7 +347,7 @@ menu_node_build() {
           echo "--------------"
           echo -e "${skyblue}0. 返回上一级菜单${re}"
           echo "--------------"
-          read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+          read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
             case $sub_choice in
                 1)
                     bash <(curl -Ls https://raw.githubusercontent.com/Misaka-blog/s-ui/master/install.sh)

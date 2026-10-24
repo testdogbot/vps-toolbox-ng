@@ -21,7 +21,7 @@ menu_panel_tools() {
       echo "------------------------"
       echo -e "${skyblue} 0. 返回主菜单${re}"
       echo "------------------------"
-      read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
       case $sub_choice in
           1)
@@ -34,7 +34,7 @@ menu_panel_tools() {
                 echo "------------------------"
                 echo "0. 返回上一级选单"
                 echo "------------------------"
-                read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                 case $sub_choice in
                     1)
@@ -86,7 +86,7 @@ menu_panel_tools() {
                 if [ "$system_type" == "unknown" ]; then
                     echo "不支持的操作系统类型"
                 else
-                    read -p "确定安装宝塔吗？(Y/N): " choice
+                    read -e -p "确定安装宝塔吗？(Y/N): " choice
                     case "$choice" in
                         [Yy])
                             iptables_open
@@ -118,7 +118,7 @@ menu_panel_tools() {
                 echo "------------------------"
                 echo "0. 返回上一级选单"
                 echo "------------------------"
-                read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                 case $sub_choice in
                     1)
@@ -170,7 +170,7 @@ menu_panel_tools() {
                 if [ "$system_type" == "unknown" ]; then
                     echo "不支持的操作系统类型"
                 else
-                    read -p "确定安装aaPanel吗？(Y/N): " choice
+                    read -e -p "确定安装aaPanel吗？(Y/N): " choice
                     case "$choice" in
                         [Yy])
                             iptables_open
@@ -201,7 +201,7 @@ menu_panel_tools() {
                 echo "------------------------"
                 echo "0. 返回上一级选单"
                 echo "------------------------"
-                read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                 case $sub_choice in
                     1)
@@ -252,7 +252,7 @@ menu_panel_tools() {
                 if [ "$system_type" == "unknown" ]; then
                   echo "不支持的操作系统类型"
                 else
-                  read -p "确定安装1Panel吗？(Y/N): " choice
+                  read -e -p "确定安装1Panel吗？(Y/N): " choice
                   case "$choice" in
                     [Yy])
                       iptables_open
@@ -388,7 +388,7 @@ menu_panel_tools() {
                     echo "------------------------"
                     echo "0. 返回上一级选单"
                     echo "------------------------"
-                    read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                    read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                     case $sub_choice in
                         1)
@@ -453,12 +453,12 @@ menu_panel_tools() {
                 echo ""
 
                 # 提示用户确认安装
-                read -p "确定安装poste.io吗？(Y/N): " choice
+                read -e -p "确定安装poste.io吗？(Y/N): " choice
                 case "$choice" in
                     [Yy])
                     clear
 
-                    read -p "请设置邮箱域名 例如 mail.yuming.com : " yuming
+                    read -e -p "请设置邮箱域名 例如 mail.yuming.com : " yuming
                     mkdir -p /home/docker      # 递归创建目录
                     echo "$yuming" > /home/docker/mail.txt  # 写入文件
                     echo "------------------------"
@@ -519,7 +519,7 @@ menu_panel_tools() {
                     echo "------------------------"
                     echo "0. 返回上一级选单"
                     echo "------------------------"
-                    read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                    read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                     case $sub_choice in
                         1)
@@ -564,7 +564,7 @@ menu_panel_tools() {
                 echo ""
 
                 # 提示用户确认安装
-                read -p "确定安装rocket.chat吗？(Y/N): " choice
+                read -e -p "确定安装rocket.chat吗？(Y/N): " choice
                 case "$choice" in
                     [Yy])
                     clear
@@ -650,7 +650,7 @@ menu_panel_tools() {
                     echo "------------------------"
                     echo "0. 返回上一级选单"
                     echo "------------------------"
-                    read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                    read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                     case $sub_choice in
                         1)
@@ -699,7 +699,7 @@ menu_panel_tools() {
                 echo ""
 
                 # 提示用户确认安装
-                read -p "确定安装cloudreve吗？(Y/N): " choice
+                read -e -p "确定安装cloudreve吗？(Y/N): " choice
                 case "$choice" in
                     [Yy])
                     clear
@@ -839,7 +839,7 @@ menu_panel_tools() {
                     echo "------------------------"
                     echo "0. 返回上一级选单"
                     echo "------------------------"
-                    read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+                    read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
                     case $sub_choice in
                         1)
@@ -869,7 +869,7 @@ menu_panel_tools() {
                 echo ""
 
                 # 提示用户确认安装
-                read -p "确定安装吗？(Y/N): " choice
+                read -e -p "确定安装吗？(Y/N): " choice
                 case "$choice" in
                     [Yy])
                     clear

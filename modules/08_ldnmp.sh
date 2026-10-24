@@ -41,7 +41,7 @@ menu_ldnmp() {
     echo  "------------------------"
     echo  -e "${yellow} 0. 返回主菜单${re}"
     echo  "------------------------"
-    read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+    read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
 
 
     case $sub_choice in
@@ -456,8 +456,8 @@ menu_ldnmp() {
       clear
       ip_address
       echo -e "先将域名解析到本机IP: \033[33m$ipv4_address\033[0m"
-      read -p "请输入你的域名: " yuming
-      read -p "请输入跳转域名: " reverseproxy
+      read -e -p "请输入你的域名: " yuming
+      read -e -p "请输入跳转域名: " reverseproxy
 
       install_ssltls
 
@@ -478,9 +478,9 @@ menu_ldnmp() {
       clear
       ip_address
       echo -e "先将域名解析到本机IP: \033[33m$ipv4_address\033[0m"
-      read -p "请输入你的域名: " yuming
-      read -p "请输入你的反代IP: " reverseproxy
-      read -p "请输入你的反代端口: " port
+      read -e -p "请输入你的域名: " yuming
+      read -e -p "请输入你的反代IP: " reverseproxy
+      read -e -p "请输入你的反代端口: " port
 
       install_ssltls
 
@@ -578,17 +578,17 @@ menu_ldnmp() {
         echo "------------------------"
         echo "0. 返回上一级选单"
         echo "------------------------"
-        read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+        read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
         case $sub_choice in
             1)
-                read -p "请输入你的域名: " yuming
+                read -e -p "请输入你的域名: " yuming
                 install_ssltls
 
                 ;;
 
             2)
-                read -p "请输入旧域名: " oddyuming
-                read -p "请输入新域名: " yuming
+                read -e -p "请输入旧域名: " oddyuming
+                read -e -p "请输入新域名: " yuming
                 mv /home/web/conf.d/$oddyuming.conf /home/web/conf.d/$yuming.conf
                 sed -i "s/$oddyuming/$yuming/g" /home/web/conf.d/$yuming.conf
                 mv /home/web/html/$oddyuming /home/web/html/$yuming
@@ -611,7 +611,7 @@ menu_ldnmp() {
                 ;;
 
             7)
-                read -p "请输入你的域名: " yuming
+                read -e -p "请输入你的域名: " yuming
                 rm -r /home/web/html/$yuming
                 rm /home/web/conf.d/$yuming.conf
                 rm /home/web/certs/${yuming}_key.pem
@@ -619,7 +619,7 @@ menu_ldnmp() {
                 docker restart nginx
                 ;;
             8)
-                read -p "请输入数据库名: " shujuku
+                read -e -p "请输入数据库名: " shujuku
                 dbrootpasswd=$(grep -oP 'MYSQL_ROOT_PASSWORD:\s*\K.*' /home/web/docker-compose.yml | tr -d '[:space:]')
                 docker exec mysql mysql -u root -p"$dbrootpasswd" -e "DROP DATABASE $shujuku;" 2> /dev/null
                 ;;
@@ -641,10 +641,10 @@ menu_ldnmp() {
 
       while true; do
         clear
-        read -p "要传送文件到远程服务器吗？(Y/N): " choice
+        read -e -p "要传送文件到远程服务器吗？(Y/N): " choice
         case "$choice" in
           [Yy])
-            read -p "请输入远端服务器IP:  " remote_ip
+            read -e -p "请输入远端服务器IP:  " remote_ip
             if [ -z "$remote_ip" ]; then
               echo "错误: 请输入远端服务器IP。"
               continue
@@ -672,8 +672,8 @@ menu_ldnmp() {
 
     33)
       clear
-      read -p "输入远程服务器IP: " useip
-      read -p "输入远程服务器密码: " usepasswd
+      read -e -p "输入远程服务器IP: " useip
+      read -e -p "输入远程服务器密码: " usepasswd
 
       wget -O ${useip}_beifen.sh https://raw.githubusercontent.com/kejilion/sh/main/beifen.sh > /dev/null 2>&1
       chmod +x ${useip}_beifen.sh
@@ -683,15 +683,15 @@ menu_ldnmp() {
 
       echo "------------------------"
       echo "1. 每周备份                 2. 每天备份"
-      read -p $'\033[1;91m请输入你的选择: \033[0m' dingshi
+      read -e -p $'\033[1;91m请输入你的选择: \033[0m' dingshi
 
       case $dingshi in
           1)
-              read -p "选择每周备份的星期几 (0-6，0代表星期日): " weekday
+              read -e -p "选择每周备份的星期几 (0-6，0代表星期日): " weekday
               (crontab -l ; echo "0 0 * * $weekday ./${useip}_beifen.sh") | crontab - > /dev/null 2>&1
               ;;
           2)
-              read -p "选择每天备份的时间（小时，0-23）: " hour
+              read -e -p "选择每天备份的时间（小时，0-23）: " hour
               (crontab -l ; echo "0 $hour * * * ./${useip}_beifen.sh") | crontab - > /dev/null 2>&1
               ;;
           *)
@@ -730,7 +730,7 @@ menu_ldnmp() {
               echo "------------------------"
               echo "0. 退出"
               echo "------------------------"
-              read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+              read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
               case $sub_choice in
                   1)
                       sed -i 's/false/true/g' /etc/fail2ban/jail.d/sshd.local
@@ -859,7 +859,7 @@ menu_ldnmp() {
               echo "------------------------"
               echo "0. 退出"
               echo "------------------------"
-              read -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
+              read -e -p $'\033[1;91m请输入你的选择: \033[0m' sub_choice
               case $sub_choice in
                   1)
                   # nginx调优
@@ -937,7 +937,7 @@ menu_ldnmp() {
 
     38)
         clear
-        read -p "强烈建议先备份全部网站数据，再卸载LDNMP环境。确定删除所有网站数据吗？(Y/N): " choice
+        read -e -p "强烈建议先备份全部网站数据，再卸载LDNMP环境。确定删除所有网站数据吗？(Y/N): " choice
         case "$choice" in
           [Yy])
             docker rm -f nginx php php74 mysql redis
